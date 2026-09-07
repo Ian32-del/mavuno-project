@@ -14,6 +14,7 @@ import { Route as StoriesRouteImport } from './routes/stories'
 import { Route as SermonsRouteImport } from './routes/sermons'
 import { Route as SalvationRouteImport } from './routes/salvation'
 import { Route as PrayerRouteImport } from './routes/prayer'
+import { Route as MinistriesRouteImport } from './routes/ministries'
 import { Route as MediaRouteImport } from './routes/media'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -49,6 +50,11 @@ const SalvationRoute = SalvationRouteImport.update({
 const PrayerRoute = PrayerRouteImport.update({
   id: '/prayer',
   path: '/prayer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MinistriesRoute = MinistriesRouteImport.update({
+  id: '/ministries',
+  path: '/ministries',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MediaRoute = MediaRouteImport.update({
@@ -87,19 +93,19 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const MinistriesMyfRoute = MinistriesMyfRouteImport.update({
-  id: '/ministries/myf',
-  path: '/ministries/myf',
-  getParentRoute: () => rootRouteImport,
+  id: '/myf',
+  path: '/myf',
+  getParentRoute: () => MinistriesRoute,
 } as any)
 const MinistriesMyaRoute = MinistriesMyaRouteImport.update({
-  id: '/ministries/mya',
-  path: '/ministries/mya',
-  getParentRoute: () => rootRouteImport,
+  id: '/mya',
+  path: '/mya',
+  getParentRoute: () => MinistriesRoute,
 } as any)
 const MinistriesCampusRoute = MinistriesCampusRouteImport.update({
-  id: '/ministries/campus',
-  path: '/ministries/campus',
-  getParentRoute: () => rootRouteImport,
+  id: '/campus',
+  path: '/campus',
+  getParentRoute: () => MinistriesRoute,
 } as any)
 const SitemapRoute = SitemapRouteImport.update({
   id: '/sitemap/',
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/media': typeof MediaRoute
+  '/ministries': typeof MinistriesRouteWithChildren
   '/prayer': typeof PrayerRoute
   '/salvation': typeof SalvationRoute
   '/sermons': typeof SermonsRoute
@@ -133,6 +140,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/media': typeof MediaRoute
+  '/ministries': typeof MinistriesRouteWithChildren
   '/prayer': typeof PrayerRoute
   '/salvation': typeof SalvationRoute
   '/sermons': typeof SermonsRoute
@@ -152,6 +160,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/media': typeof MediaRoute
+  '/ministries': typeof MinistriesRouteWithChildren
   '/prayer': typeof PrayerRoute
   '/salvation': typeof SalvationRoute
   '/sermons': typeof SermonsRoute
@@ -172,6 +181,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/events'
     | '/media'
+    | '/ministries'
     | '/prayer'
     | '/salvation'
     | '/sermons'
@@ -190,6 +200,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/events'
     | '/media'
+    | '/ministries'
     | '/prayer'
     | '/salvation'
     | '/sermons'
@@ -208,6 +219,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/events'
     | '/media'
+    | '/ministries'
     | '/prayer'
     | '/salvation'
     | '/sermons'
@@ -227,15 +239,13 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   EventsRoute: typeof EventsRoute
   MediaRoute: typeof MediaRoute
+  MinistriesRoute: typeof MinistriesRouteWithChildren
   PrayerRoute: typeof PrayerRoute
   SalvationRoute: typeof SalvationRoute
   SermonsRoute: typeof SermonsRoute
   StoriesRoute: typeof StoriesRoute
   VisitRoute: typeof VisitRoute
   SitemapRoute: typeof SitemapRoute
-  MinistriesCampusRoute: typeof MinistriesCampusRoute
-  MinistriesMyaRoute: typeof MinistriesMyaRoute
-  MinistriesMyfRoute: typeof MinistriesMyfRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -273,6 +283,13 @@ declare module '@tanstack/react-router' {
       path: '/prayer'
       fullPath: '/prayer'
       preLoaderRoute: typeof PrayerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ministries': {
+      id: '/ministries'
+      path: '/ministries'
+      fullPath: '/ministries'
+      preLoaderRoute: typeof MinistriesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/media': {
@@ -326,24 +343,24 @@ declare module '@tanstack/react-router' {
     }
     '/ministries/myf': {
       id: '/ministries/myf'
-      path: '/ministries/myf'
+      path: '/myf'
       fullPath: '/ministries/myf'
       preLoaderRoute: typeof MinistriesMyfRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof MinistriesRoute
     }
     '/ministries/mya': {
       id: '/ministries/mya'
-      path: '/ministries/mya'
+      path: '/mya'
       fullPath: '/ministries/mya'
       preLoaderRoute: typeof MinistriesMyaRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof MinistriesRoute
     }
     '/ministries/campus': {
       id: '/ministries/campus'
-      path: '/ministries/campus'
+      path: '/campus'
       fullPath: '/ministries/campus'
       preLoaderRoute: typeof MinistriesCampusRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof MinistriesRoute
     }
     '/sitemap/': {
       id: '/sitemap/'
@@ -355,6 +372,22 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface MinistriesRouteChildren {
+  MinistriesCampusRoute: typeof MinistriesCampusRoute
+  MinistriesMyaRoute: typeof MinistriesMyaRoute
+  MinistriesMyfRoute: typeof MinistriesMyfRoute
+}
+
+const MinistriesRouteChildren: MinistriesRouteChildren = {
+  MinistriesCampusRoute: MinistriesCampusRoute,
+  MinistriesMyaRoute: MinistriesMyaRoute,
+  MinistriesMyfRoute: MinistriesMyfRoute,
+}
+
+const MinistriesRouteWithChildren = MinistriesRoute._addFileChildren(
+  MinistriesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   READMERoute: READMERoute,
@@ -363,15 +396,13 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   EventsRoute: EventsRoute,
   MediaRoute: MediaRoute,
+  MinistriesRoute: MinistriesRouteWithChildren,
   PrayerRoute: PrayerRoute,
   SalvationRoute: SalvationRoute,
   SermonsRoute: SermonsRoute,
   StoriesRoute: StoriesRoute,
   VisitRoute: VisitRoute,
   SitemapRoute: SitemapRoute,
-  MinistriesCampusRoute: MinistriesCampusRoute,
-  MinistriesMyaRoute: MinistriesMyaRoute,
-  MinistriesMyfRoute: MinistriesMyfRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
