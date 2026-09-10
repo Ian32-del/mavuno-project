@@ -21,7 +21,7 @@ const prayerSchema = z.object({
 });
 
 export const submitPrayerRequest = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => prayerSchema.parse(d))
+  .validator((d: unknown) => prayerSchema.parse(d))
   .handler(async ({ data }) => {
     const supabase = getServerClient();
     const { error } = await supabase.from("prayer_requests").insert({
@@ -45,7 +45,7 @@ const salvationSchema = z.object({
 });
 
 export const submitSalvationDecision = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => salvationSchema.parse(d))
+  .validator((d: unknown) => salvationSchema.parse(d))
   .handler(async ({ data }) => {
     const supabase = getServerClient();
     const { error } = await supabase.from("salvation_decisions").insert({
@@ -72,7 +72,7 @@ const campSchema = z.object({
 });
 
 export const submitCampRegistration = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => campSchema.parse(d))
+  .validator((d: unknown) => campSchema.parse(d))
   .handler(async ({ data }) => {
     const supabase = getServerClient();
     const { error } = await supabase.from("camp_registrations").insert({
@@ -99,7 +99,7 @@ const contactSchema = z.object({
 });
 
 export const submitContact = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => contactSchema.parse(d))
+  .validator((d: unknown) => contactSchema.parse(d))
   .handler(async ({ data }) => {
     const supabase = getServerClient();
     const { error } = await supabase.from("contact_submissions").insert({
@@ -116,7 +116,7 @@ export const submitContact = createServerFn({ method: "POST" })
 const newsletterSchema = z.object({ email: z.string().trim().email().max(255) });
 
 export const subscribeNewsletter = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => newsletterSchema.parse(d))
+  .validator((d: unknown) => newsletterSchema.parse(d))
   .handler(async ({ data }) => {
     const supabase = getServerClient();
     const { error } = await supabase.from("newsletter_subscribers").insert({ email: data.email });
