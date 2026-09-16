@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Calendar, Play, Flame, Heart, Users, Sparkles, Quote } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import heroImg from "@/assets/hero-worship.jpeg";
 import myfImg from "@/assets/ministry-myf.jpeg";
 import myaImg from "@/assets/ministry-mya.jpeg";
@@ -18,6 +19,78 @@ const stats = [
   { value: "220", label: "Small Groups" },
   { value: "28", label: "Universities Reached" },
 ];
+
+function CountUp({
+  value,
+  duration = 2000,
+}: {
+  value: string;
+  duration?: number;
+}) {
+  const [count, setCount] = useState(0);
+  const [hasStarted, setHasStarted] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!ref.current || hasStarted) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasStarted(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 },
+    );
+
+    observer.observe(ref.current);
+
+    return () => observer.disconnect();
+  }, [hasStarted]);
+
+  useEffect(() => {
+    if (!hasStarted) return;
+
+    const target = parseInt(value.replace(/[^0-9]/g, ""), 10);
+
+    // Handle values like 12K+
+    const isK = value.toUpperCase().includes("K");
+
+    const startTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // Smooth ease-out animation
+      const easedProgress = 1 - Math.pow(1 - progress, 3);
+
+      setCount(Math.floor(target * easedProgress));
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        setCount(target);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }, [hasStarted, value, duration]);
+
+  const formatted = value.toUpperCase().includes("K")
+    ? `${count}K+`
+    : `${count}`;
+
+  return (
+    <div
+      ref={ref}
+      className="text-display text-4xl text-brand sm:text-5xl"
+    >
+      {formatted}
+    </div>
+  );
+}
 
 const ministries = [
   {
@@ -74,7 +147,7 @@ function Index() {
             community and life-changing camp experiences.
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
-            <Link to="/ministries/myf" className="inline-flex items-center gap-2 rounded-md bg-brand px-6 py-3.5 text-base font-semibold text-brand-foreground shadow-glow transition hover:brightness-110">
+            <Link to="/ministries" className="inline-flex items-center gap-2 rounded-md bg-brand px-6 py-3.5 text-base font-semibold text-brand-foreground shadow-glow transition hover:brightness-110">
               Join a Ministry <ArrowRight className="h-4 w-4" />
             </Link>
             <Link to="/camps" className="inline-flex items-center gap-2 rounded-md border border-white/25 bg-white/5 px-6 py-3.5 text-base font-semibold text-white backdrop-blur transition hover:bg-white/10">
@@ -124,7 +197,7 @@ function Index() {
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 sm:px-6 md:grid-cols-5 lg:px-8">
           {stats.map((s) => (
             <div key={s.label} className="text-center">
-              <div className="text-display text-4xl text-brand sm:text-5xl">{s.value}</div>
+              <CountUp value={s.value} />
               <div className="mt-1 text-xs font-medium uppercase tracking-widest text-white/60">{s.label}</div>
             </div>
           ))}

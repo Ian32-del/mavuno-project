@@ -19,12 +19,20 @@ import { Route as MediaRouteImport } from './routes/media'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CampsRouteImport } from './routes/camps'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as READMERouteImport } from './routes/README'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as MinistriesMyfRouteImport } from './routes/ministries.myf'
 import { Route as MinistriesMyaRouteImport } from './routes/ministries.mya'
 import { Route as MinistriesCampusRouteImport } from './routes/ministries.campus'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminSermonsRouteImport } from './routes/admin.sermons'
+import { Route as AdminResourcesRouteImport } from './routes/admin.resources'
+import { Route as AdminMinistriesRouteImport } from './routes/admin.ministries'
+import { Route as AdminMediaRouteImport } from './routes/admin.media'
+import { Route as AdminEventsRouteImport } from './routes/admin.events'
 import { Route as SitemapRouteImport } from './routes/sitemap.'
 
 const VisitRoute = VisitRouteImport.update({
@@ -77,6 +85,11 @@ const CampsRoute = CampsRouteImport.update({
   path: '/camps',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -91,6 +104,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const MinistriesMyfRoute = MinistriesMyfRouteImport.update({
   id: '/myf',
@@ -107,6 +125,36 @@ const MinistriesCampusRoute = MinistriesCampusRouteImport.update({
   path: '/campus',
   getParentRoute: () => MinistriesRoute,
 } as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSermonsRoute = AdminSermonsRouteImport.update({
+  id: '/sermons',
+  path: '/sermons',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminResourcesRoute = AdminResourcesRouteImport.update({
+  id: '/resources',
+  path: '/resources',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMinistriesRoute = AdminMinistriesRouteImport.update({
+  id: '/ministries',
+  path: '/ministries',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMediaRoute = AdminMediaRouteImport.update({
+  id: '/media',
+  path: '/media',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEventsRoute = AdminEventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => AdminRoute,
+} as any)
 const SitemapRoute = SitemapRouteImport.update({
   id: '/sitemap/',
   path: '/sitemap/',
@@ -117,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/README': typeof READMERoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
   '/camps': typeof CampsRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
@@ -128,9 +177,16 @@ export interface FileRoutesByFullPath {
   '/stories': typeof StoriesRoute
   '/visit': typeof VisitRoute
   '/sitemap/': typeof SitemapRoute
+  '/admin/events': typeof AdminEventsRoute
+  '/admin/media': typeof AdminMediaRoute
+  '/admin/ministries': typeof AdminMinistriesRoute
+  '/admin/resources': typeof AdminResourcesRoute
+  '/admin/sermons': typeof AdminSermonsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/ministries/campus': typeof MinistriesCampusRoute
   '/ministries/mya': typeof MinistriesMyaRoute
   '/ministries/myf': typeof MinistriesMyfRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -147,15 +203,23 @@ export interface FileRoutesByTo {
   '/stories': typeof StoriesRoute
   '/visit': typeof VisitRoute
   '/sitemap': typeof SitemapRoute
+  '/admin/events': typeof AdminEventsRoute
+  '/admin/media': typeof AdminMediaRoute
+  '/admin/ministries': typeof AdminMinistriesRoute
+  '/admin/resources': typeof AdminResourcesRoute
+  '/admin/sermons': typeof AdminSermonsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/ministries/campus': typeof MinistriesCampusRoute
   '/ministries/mya': typeof MinistriesMyaRoute
   '/ministries/myf': typeof MinistriesMyfRoute
+  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/README': typeof READMERoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
   '/camps': typeof CampsRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
@@ -167,9 +231,16 @@ export interface FileRoutesById {
   '/stories': typeof StoriesRoute
   '/visit': typeof VisitRoute
   '/sitemap/': typeof SitemapRoute
+  '/admin/events': typeof AdminEventsRoute
+  '/admin/media': typeof AdminMediaRoute
+  '/admin/ministries': typeof AdminMinistriesRoute
+  '/admin/resources': typeof AdminResourcesRoute
+  '/admin/sermons': typeof AdminSermonsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/ministries/campus': typeof MinistriesCampusRoute
   '/ministries/mya': typeof MinistriesMyaRoute
   '/ministries/myf': typeof MinistriesMyfRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -177,6 +248,7 @@ export interface FileRouteTypes {
     | '/'
     | '/README'
     | '/about'
+    | '/admin'
     | '/camps'
     | '/contact'
     | '/events'
@@ -188,9 +260,16 @@ export interface FileRouteTypes {
     | '/stories'
     | '/visit'
     | '/sitemap/'
+    | '/admin/events'
+    | '/admin/media'
+    | '/admin/ministries'
+    | '/admin/resources'
+    | '/admin/sermons'
+    | '/admin/users'
     | '/ministries/campus'
     | '/ministries/mya'
     | '/ministries/myf'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -207,14 +286,22 @@ export interface FileRouteTypes {
     | '/stories'
     | '/visit'
     | '/sitemap'
+    | '/admin/events'
+    | '/admin/media'
+    | '/admin/ministries'
+    | '/admin/resources'
+    | '/admin/sermons'
+    | '/admin/users'
     | '/ministries/campus'
     | '/ministries/mya'
     | '/ministries/myf'
+    | '/admin'
   id:
     | '__root__'
     | '/'
     | '/README'
     | '/about'
+    | '/admin'
     | '/camps'
     | '/contact'
     | '/events'
@@ -226,15 +313,23 @@ export interface FileRouteTypes {
     | '/stories'
     | '/visit'
     | '/sitemap/'
+    | '/admin/events'
+    | '/admin/media'
+    | '/admin/ministries'
+    | '/admin/resources'
+    | '/admin/sermons'
+    | '/admin/users'
     | '/ministries/campus'
     | '/ministries/mya'
     | '/ministries/myf'
+    | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   READMERoute: typeof READMERoute
   AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRouteWithChildren
   CampsRoute: typeof CampsRoute
   ContactRoute: typeof ContactRoute
   EventsRoute: typeof EventsRoute
@@ -320,6 +415,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CampsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -340,6 +442,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/ministries/myf': {
       id: '/ministries/myf'
@@ -362,6 +471,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MinistriesCampusRouteImport
       parentRoute: typeof MinistriesRoute
     }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/sermons': {
+      id: '/admin/sermons'
+      path: '/sermons'
+      fullPath: '/admin/sermons'
+      preLoaderRoute: typeof AdminSermonsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/resources': {
+      id: '/admin/resources'
+      path: '/resources'
+      fullPath: '/admin/resources'
+      preLoaderRoute: typeof AdminResourcesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/ministries': {
+      id: '/admin/ministries'
+      path: '/ministries'
+      fullPath: '/admin/ministries'
+      preLoaderRoute: typeof AdminMinistriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/media': {
+      id: '/admin/media'
+      path: '/media'
+      fullPath: '/admin/media'
+      preLoaderRoute: typeof AdminMediaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/events': {
+      id: '/admin/events'
+      path: '/events'
+      fullPath: '/admin/events'
+      preLoaderRoute: typeof AdminEventsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/sitemap/': {
       id: '/sitemap/'
       path: '/sitemap'
@@ -371,6 +522,28 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AdminRouteChildren {
+  AdminEventsRoute: typeof AdminEventsRoute
+  AdminMediaRoute: typeof AdminMediaRoute
+  AdminMinistriesRoute: typeof AdminMinistriesRoute
+  AdminResourcesRoute: typeof AdminResourcesRoute
+  AdminSermonsRoute: typeof AdminSermonsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminEventsRoute: AdminEventsRoute,
+  AdminMediaRoute: AdminMediaRoute,
+  AdminMinistriesRoute: AdminMinistriesRoute,
+  AdminResourcesRoute: AdminResourcesRoute,
+  AdminSermonsRoute: AdminSermonsRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface MinistriesRouteChildren {
   MinistriesCampusRoute: typeof MinistriesCampusRoute
@@ -392,6 +565,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   READMERoute: READMERoute,
   AboutRoute: AboutRoute,
+  AdminRoute: AdminRouteWithChildren,
   CampsRoute: CampsRoute,
   ContactRoute: ContactRoute,
   EventsRoute: EventsRoute,

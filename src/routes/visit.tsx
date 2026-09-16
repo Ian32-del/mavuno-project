@@ -34,8 +34,25 @@ function VisitPage() {
       />
       <section className="bg-background py-16">
         <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-3 lg:px-8">
-          <Info icon={Clock} title="Service times" body={<>Sundays<br />9:30 AM · 11:30 AM · 4:00 PM (MYA)</>} />
-          <Info icon={MapPin} title="Location" body={<>Mavuno Bellevue Campus<br />Mombasa Road, Nairobi</>} />
+          <Info
+            icon={Clock}
+            title="Service times"
+            body={
+              <div className="space-y-3">
+                <p className="font-semibold">Sundays</p>
+
+                <div className="space-y-2">
+                  <p>
+                    <span className="font-semibold">First Service:</span> 9:00 AM - 10:30 AM
+                  </p>
+                  <p>
+                    <span className="font-semibold">Second Service:</span> 11:00 AM - 12:30 PM  (MYA)
+                  </p>
+                </div>
+              </div>
+            }
+          />
+          <Info icon={MapPin} title="Location" body={<>Mavuno HillCity Campus<br />Mombasa Road, Athi-river</>} />
           <Info icon={Coffee} title="Arrive early" body={<>Free coffee & connect points open 30 minutes before every service.</>} />
         </div>
       </section>
