@@ -39,7 +39,7 @@ export function SiteFooter() {
             Raising Christ-centered leaders for this generation through discipleship, worship,
             leadership development, community and life-changing camp experiences.
           </p>
-          <form onSubmit={onSubmit} className="mt-6 flex max-w-md gap-2">
+          {/* <form onSubmit={onSubmit} className="mt-6 flex max-w-md gap-2">
             <input
               type="email"
               required
@@ -54,15 +54,16 @@ export function SiteFooter() {
             >
               {loading ? "…" : "Subscribe"}
             </button>
-          </form>
+          </form> */}
         </div>
         <div className="lg:col-span-3">
           <h3 className="text-sm font-semibold uppercase tracking-widest text-white/60">Explore</h3>
           <ul className="mt-4 space-y-2 text-sm text-white/80">
             <li><Link to="/about" className="hover:text-brand">About</Link></li>
-            <li><Link to="/ministries/myf" className="hover:text-brand">Young & Fearless</Link></li>
+            {/* <li><Link to="/ministries/myf" className="hover:text-brand">Young & Fearless</Link></li>
             <li><Link to="/ministries/mya" className="hover:text-brand">Young Adults</Link></li>
-            <li><Link to="/ministries/campus" className="hover:text-brand">Campus Trends</Link></li>
+            <li><Link to="/ministries/campus" className="hover:text-brand">Campus Trends</Link></li> */}
+            <li><Link to="/ministries" className="hover:text-brand">Ministries</Link></li>
             <li><Link to="/camps" className="hover:text-brand">Camps</Link></li>
             <li><Link to="/sermons" className="hover:text-brand">Sermons</Link></li>
             <li><Link to="/stories" className="hover:text-brand">Salvation Stories</Link></li>
@@ -71,7 +72,7 @@ export function SiteFooter() {
         <div className="lg:col-span-4">
           <h3 className="text-sm font-semibold uppercase tracking-widest text-white/60">Contact</h3>
           <ul className="mt-4 space-y-3 text-sm text-white/80">
-            <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 text-brand" /> Bellevue Campus, Nairobi, Kenya</li>
+            <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 text-brand" /> HillCity Campus, Nairobi, Athi River</li>
             <li className="flex items-start gap-2"><Mail className="mt-0.5 h-4 w-4 text-brand" /> youth@mavunochurch.org</li>
             <li className="flex items-start gap-2"><Phone className="mt-0.5 h-4 w-4 text-brand" /> +254 700 000 000</li>
           </ul>
