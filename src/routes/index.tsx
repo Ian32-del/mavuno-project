@@ -246,9 +246,9 @@ function Index() {
         <div className="relative mx-auto grid max-w-7xl gap-8 px-4 py-24 sm:px-6 lg:grid-cols-2 lg:px-8">
           <div>
             <p className="text-sm font-semibold uppercase tracking-widest text-brand">Camp 2026 · Registration open</p>
-            <h2 className="text-display mt-4 text-5xl sm:text-6xl lg:text-7xl">Ignite <span className="text-brand">2026</span></h2>
+            <h2 className="text-display mt-4 text-5xl sm:text-6xl lg:text-7xl">Camp Fearless <span className="text-brand">2026</span></h2>
             <p className="mt-4 max-w-lg text-lg text-white/80">
-              Four days. Thousands of young people. One radical encounter with Jesus. Nakuru, April 10–13.
+              Four days. Thousands of young people. One radical encounter with Jesus. HillCity, April 10–13.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link to="/camps" className="inline-flex items-center gap-2 rounded-md bg-brand px-6 py-3 font-semibold text-brand-foreground shadow-glow transition hover:brightness-110">

@@ -54,7 +54,7 @@ function ContactPage() {
       <section className="bg-background py-16">
         <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-5 lg:px-8">
           <div className="space-y-6 lg:col-span-2">
-            <Row icon={MapPin} label="Address" value="Mavuno Bellevue Campus, Mombasa Road, Nairobi" />
+            <Row icon={MapPin} label="Address" value="Mavuno HillCity Campus, Mombasa Road, Nairobi" />
             <Row icon={Mail} label="Email" value="youth@mavunochurch.org" />
             <Row icon={Phone} label="Phone" value="+254 700 000 000" />
           </div>

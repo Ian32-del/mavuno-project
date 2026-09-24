@@ -58,9 +58,9 @@ function CampsPage() {
   return (
     <>
       <PageHero
-        eyebrow="Camps · Ignite 2026"
+        eyebrow="Camps · Fearless 2026"
         title={<>Four days that <span className="text-brand">rewrite</span> your year.</>}
-        subtitle="Ignite Camp is Mavuno Youth's flagship gathering — worship, teaching, community and encounters with God that mark you for life."
+        subtitle=" Camp Fearless is Mavuno Youth's flagship gathering — worship, teaching, community and encounters with God that mark you for life."
       />
 
       <section className="relative bg-background py-20">
@@ -70,13 +70,13 @@ function CampsPage() {
           </div>
           <div>
             <span className="inline-block rounded-full bg-brand/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-brand">Upcoming</span>
-            <h2 className="text-display mt-4 text-5xl sm:text-6xl">Ignite <span className="text-brand">2026</span></h2>
+            <h2 className="text-display mt-4 text-5xl sm:text-6xl">Fearless <span className="text-brand">2026</span></h2>
             <p className="mt-3 text-lg text-muted-foreground">Theme: <span className="font-semibold text-foreground">Unshakable — Rooted in Christ, ready for anything.</span></p>
             <ul className="mt-6 space-y-3 text-sm">
               <li className="flex items-center gap-3"><CalendarDays className="h-5 w-5 text-brand" /> 10 – 13 April 2026</li>
-              <li className="flex items-center gap-3"><MapPin className="h-5 w-5 text-brand" /> Lake Naivasha Resort, Nakuru</li>
+              <li className="flex items-center gap-3"><MapPin className="h-5 w-5 text-brand" /> Mavuno HillCity Campus, Mombasa Road, Nairobi</li>
               <li className="flex items-center gap-3"><Users className="h-5 w-5 text-brand" /> Open to all youth 13+</li>
-              <li className="flex items-center gap-3"><Ticket className="h-5 w-5 text-brand" /> KES 6,500 · Early bird until 15 Feb: KES 5,500</li>
+              <li className="flex items-center gap-3"><Ticket className="h-5 w-5 text-brand" /> KES You come!! · Early bird - Its free</li>
               <li className="flex items-center gap-3"><Clock className="h-5 w-5 text-brand" /> Registration closes 25 March</li>
             </ul>
             <a href="#register" className="mt-8 inline-flex items-center gap-2 rounded-md bg-brand px-6 py-3 font-semibold text-brand-foreground shadow-glow hover:brightness-110">
