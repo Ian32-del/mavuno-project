@@ -31,8 +31,8 @@ export const Route = createFileRoute("/ministries/myf")({
         "Outreach & mission weeks",
       ]}
       leaders={[
-        { name: "Pastor Kevin Mwangi", role: "MYF Pastor" },
-        { name: "Grace Njeri", role: "Discipleship Lead" },
+        { name: "Pastor Patricia", role: "MYF Pastor" },
+        { name: "Kevin ", role: "Discipleship Lead" },
         { name: "David Otieno", role: "Worship Lead" },
         { name: "Faith Wambui", role: "Small Groups" },
       ]}

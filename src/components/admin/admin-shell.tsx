@@ -1,5 +1,5 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, CalendarDays, Mic2, FileText, ImageIcon, Users, Church, LogOut } from "lucide-react";
+import { LayoutDashboard, CalendarDays, ImageIcon, Users, Church, LogOut, Flame, HeartHandshake, Mail } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -10,10 +10,11 @@ type Role = "super_admin" | "pastor" | "ministry_leader";
 const NAV: { to: string; label: string; icon: typeof LayoutDashboard; roles?: Role[] }[] = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { to: "/admin/events", label: "Events", icon: CalendarDays },
-  { to: "/admin/sermons", label: "Sermons", icon: Mic2, roles: ["super_admin", "pastor"] },
-  { to: "/admin/resources", label: "Resources", icon: FileText, roles: ["super_admin", "pastor"] },
-  { to: "/admin/media", label: "Media", icon: ImageIcon },
+  { to: "/admin/messages", label: "Messages", icon: Mail },
+  { to: "/admin/media", label: "Featured photos", icon: ImageIcon },
   { to: "/admin/ministries", label: "Ministries", icon: Church },
+  { to: "/admin/salvation", label: "Salvation", icon: Flame },
+  { to: "/admin/prayer", label: "Prayer requests", icon: HeartHandshake },
   { to: "/admin/users", label: "Users", icon: Users, roles: ["super_admin"] },
 ];
 

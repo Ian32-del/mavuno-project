@@ -31,8 +31,8 @@ export const Route = createFileRoute("/ministries/mya")({
         "Annual MYA retreat",
       ]}
       leaders={[
-        { name: "Pastor Aisha Kariuki", role: "MYA Pastor" },
-        { name: "Samuel Omondi", role: "Discipleship" },
+        { name: "Pastor Patricia", role: "MYA Pastor" },
+        { name: "Henry", role: "Discipleship" },
         { name: "Naomi Chebet", role: "Community" },
         { name: "Peter Kimani", role: "Leadership Pipeline" },
       ]}

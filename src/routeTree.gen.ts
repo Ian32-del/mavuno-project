@@ -28,9 +28,11 @@ import { Route as MinistriesMyfRouteImport } from './routes/ministries.myf'
 import { Route as MinistriesMyaRouteImport } from './routes/ministries.mya'
 import { Route as MinistriesCampusRouteImport } from './routes/ministries.campus'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
-import { Route as AdminSermonsRouteImport } from './routes/admin.sermons'
+import { Route as AdminSalvationRouteImport } from './routes/admin.salvation'
 import { Route as AdminResourcesRouteImport } from './routes/admin.resources'
+import { Route as AdminPrayerRouteImport } from './routes/admin.prayer'
 import { Route as AdminMinistriesRouteImport } from './routes/admin.ministries'
+import { Route as AdminMessagesRouteImport } from './routes/admin.messages'
 import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminEventsRouteImport } from './routes/admin.events'
 import { Route as SitemapRouteImport } from './routes/sitemap.'
@@ -130,9 +132,9 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminSermonsRoute = AdminSermonsRouteImport.update({
-  id: '/sermons',
-  path: '/sermons',
+const AdminSalvationRoute = AdminSalvationRouteImport.update({
+  id: '/salvation',
+  path: '/salvation',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminResourcesRoute = AdminResourcesRouteImport.update({
@@ -140,9 +142,19 @@ const AdminResourcesRoute = AdminResourcesRouteImport.update({
   path: '/resources',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminPrayerRoute = AdminPrayerRouteImport.update({
+  id: '/prayer',
+  path: '/prayer',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminMinistriesRoute = AdminMinistriesRouteImport.update({
   id: '/ministries',
   path: '/ministries',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMessagesRoute = AdminMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminMediaRoute = AdminMediaRouteImport.update({
@@ -179,9 +191,11 @@ export interface FileRoutesByFullPath {
   '/sitemap/': typeof SitemapRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/media': typeof AdminMediaRoute
+  '/admin/messages': typeof AdminMessagesRoute
   '/admin/ministries': typeof AdminMinistriesRoute
+  '/admin/prayer': typeof AdminPrayerRoute
   '/admin/resources': typeof AdminResourcesRoute
-  '/admin/sermons': typeof AdminSermonsRoute
+  '/admin/salvation': typeof AdminSalvationRoute
   '/admin/users': typeof AdminUsersRoute
   '/ministries/campus': typeof MinistriesCampusRoute
   '/ministries/mya': typeof MinistriesMyaRoute
@@ -205,9 +219,11 @@ export interface FileRoutesByTo {
   '/sitemap': typeof SitemapRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/media': typeof AdminMediaRoute
+  '/admin/messages': typeof AdminMessagesRoute
   '/admin/ministries': typeof AdminMinistriesRoute
+  '/admin/prayer': typeof AdminPrayerRoute
   '/admin/resources': typeof AdminResourcesRoute
-  '/admin/sermons': typeof AdminSermonsRoute
+  '/admin/salvation': typeof AdminSalvationRoute
   '/admin/users': typeof AdminUsersRoute
   '/ministries/campus': typeof MinistriesCampusRoute
   '/ministries/mya': typeof MinistriesMyaRoute
@@ -233,9 +249,11 @@ export interface FileRoutesById {
   '/sitemap/': typeof SitemapRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/media': typeof AdminMediaRoute
+  '/admin/messages': typeof AdminMessagesRoute
   '/admin/ministries': typeof AdminMinistriesRoute
+  '/admin/prayer': typeof AdminPrayerRoute
   '/admin/resources': typeof AdminResourcesRoute
-  '/admin/sermons': typeof AdminSermonsRoute
+  '/admin/salvation': typeof AdminSalvationRoute
   '/admin/users': typeof AdminUsersRoute
   '/ministries/campus': typeof MinistriesCampusRoute
   '/ministries/mya': typeof MinistriesMyaRoute
@@ -262,9 +280,11 @@ export interface FileRouteTypes {
     | '/sitemap/'
     | '/admin/events'
     | '/admin/media'
+    | '/admin/messages'
     | '/admin/ministries'
+    | '/admin/prayer'
     | '/admin/resources'
-    | '/admin/sermons'
+    | '/admin/salvation'
     | '/admin/users'
     | '/ministries/campus'
     | '/ministries/mya'
@@ -288,9 +308,11 @@ export interface FileRouteTypes {
     | '/sitemap'
     | '/admin/events'
     | '/admin/media'
+    | '/admin/messages'
     | '/admin/ministries'
+    | '/admin/prayer'
     | '/admin/resources'
-    | '/admin/sermons'
+    | '/admin/salvation'
     | '/admin/users'
     | '/ministries/campus'
     | '/ministries/mya'
@@ -315,9 +337,11 @@ export interface FileRouteTypes {
     | '/sitemap/'
     | '/admin/events'
     | '/admin/media'
+    | '/admin/messages'
     | '/admin/ministries'
+    | '/admin/prayer'
     | '/admin/resources'
-    | '/admin/sermons'
+    | '/admin/salvation'
     | '/admin/users'
     | '/ministries/campus'
     | '/ministries/mya'
@@ -478,11 +502,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/sermons': {
-      id: '/admin/sermons'
-      path: '/sermons'
-      fullPath: '/admin/sermons'
-      preLoaderRoute: typeof AdminSermonsRouteImport
+    '/admin/salvation': {
+      id: '/admin/salvation'
+      path: '/salvation'
+      fullPath: '/admin/salvation'
+      preLoaderRoute: typeof AdminSalvationRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/resources': {
@@ -492,11 +516,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminResourcesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/prayer': {
+      id: '/admin/prayer'
+      path: '/prayer'
+      fullPath: '/admin/prayer'
+      preLoaderRoute: typeof AdminPrayerRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/ministries': {
       id: '/admin/ministries'
       path: '/ministries'
       fullPath: '/admin/ministries'
       preLoaderRoute: typeof AdminMinistriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/messages': {
+      id: '/admin/messages'
+      path: '/messages'
+      fullPath: '/admin/messages'
+      preLoaderRoute: typeof AdminMessagesRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/media': {
@@ -526,9 +564,11 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminEventsRoute: typeof AdminEventsRoute
   AdminMediaRoute: typeof AdminMediaRoute
+  AdminMessagesRoute: typeof AdminMessagesRoute
   AdminMinistriesRoute: typeof AdminMinistriesRoute
+  AdminPrayerRoute: typeof AdminPrayerRoute
   AdminResourcesRoute: typeof AdminResourcesRoute
-  AdminSermonsRoute: typeof AdminSermonsRoute
+  AdminSalvationRoute: typeof AdminSalvationRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -536,9 +576,11 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminEventsRoute: AdminEventsRoute,
   AdminMediaRoute: AdminMediaRoute,
+  AdminMessagesRoute: AdminMessagesRoute,
   AdminMinistriesRoute: AdminMinistriesRoute,
+  AdminPrayerRoute: AdminPrayerRoute,
   AdminResourcesRoute: AdminResourcesRoute,
-  AdminSermonsRoute: AdminSermonsRoute,
+  AdminSalvationRoute: AdminSalvationRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }

@@ -7,6 +7,8 @@ import myfImg from "@/assets/ministry-myf.jpeg";
 import myaImg from "@/assets/ministry-mya.jpeg";
 import campusImg from "@/assets/ministry-campus.jpeg";
 import bonfireImg from "@/assets/camp-bonfire.jpeg";
+import { UpcomingEvents } from "@/components/upcoming-events";
+import { useSiteImage } from "@/lib/site-images";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -122,13 +124,21 @@ const testimonials = [
   { name: "Zawadi M.", role: "MYF · Form 4", quote: "I gave my life to Christ at MYF camp. Now I lead worship at my school fellowship. God is real." },
 ];
 
+
 function Index() {
+
+  const hero = useSiteImage("home_hero", heroImg);
+  const myf = useSiteImage("myf_hero", myfImg);
+  const mya = useSiteImage("mya_hero", myaImg);
+  const campus = useSiteImage("campus_hero", campusImg);
+  const bonfire = useSiteImage("camps_hero", bonfireImg);
+  const ministryImgs: Record<string, string> = { myf, mya, campus };
   return (
     <>
       {/* HERO */}
       <section className="relative isolate overflow-hidden bg-ink text-ink-foreground">
         <img
-          src={heroImg}
+          src={hero}
           alt="Youth worshipping at Mavuno Youth conference"
           width={1920}
           height={1280}
@@ -224,7 +234,7 @@ function Index() {
                 className="group relative overflow-hidden rounded-2xl border border-border bg-card"
               >
                 <div className="relative aspect-[4/5] overflow-hidden">
-                  <img src={m.img} alt={m.title} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                  <img src={ministryImgs[m.slug]} alt={m.title} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 p-6 text-white">
                     <span className="inline-block rounded-full bg-brand/90 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-brand-foreground">{m.tag}</span>
@@ -241,7 +251,7 @@ function Index() {
 
       {/* CAMP BANNER */}
       <section className="relative isolate overflow-hidden bg-ink text-white">
-        <img src={bonfireImg} alt="Camp bonfire" loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-40" />
+        <img src={bonfire} alt="Camp bonfire" loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-40" />
         <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/70 to-ink/20" />
         <div className="relative mx-auto grid max-w-7xl gap-8 px-4 py-24 sm:px-6 lg:grid-cols-2 lg:px-8">
           <div>
@@ -259,14 +269,14 @@ function Index() {
               </Link>
             </div>
           </div>
-          <div className="grid grid-cols-4 gap-3 self-end">
+          {/* <div className="grid grid-cols-4 gap-3 self-end">
             {[{ v: "04", l: "Days" }, { v: "12", l: "Speakers" }, { v: "20+", l: "Sessions" }, { v: "1", l: "God" }].map((c) => (
               <div key={c.l} className="rounded-lg border border-white/15 bg-white/5 p-4 text-center backdrop-blur">
                 <div className="text-display text-3xl text-brand">{c.v}</div>
                 <div className="mt-1 text-[10px] uppercase tracking-widest text-white/70">{c.l}</div>
               </div>
             ))}
-          </div>
+          </div> */}
         </div>
       </section>
 
@@ -318,31 +328,7 @@ function Index() {
       </section>
 
       {/* EVENTS PREVIEW */}
-      <section className="bg-background py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-widest text-brand">What's next</p>
-              <h2 className="text-display mt-3 text-4xl sm:text-5xl">Upcoming.</h2>
-            </div>
-            <Link to="/events" className="hidden font-semibold text-brand sm:inline-flex sm:items-center sm:gap-1">All events <ArrowRight className="h-4 w-4" /></Link>
-          </div>
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {[
-              { d: "Fri 14 Feb", t: "MYA Night of Worship", loc: "Bellevue Auditorium" },
-              { d: "Sat 01 Mar", t: "Campus Leaders Summit", loc: "USIU Nairobi" },
-              { d: "10–13 Apr", t: "Ignite Camp 2026", loc: "Nakuru" },
-            ].map((e) => (
-              <div key={e.t} className="group rounded-xl border border-border bg-card p-6 transition hover:border-brand">
-                <Calendar className="h-5 w-5 text-brand" />
-                <div className="mt-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">{e.d}</div>
-                <h3 className="text-display mt-2 text-2xl">{e.t}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{e.loc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <UpcomingEvents />
     </>
   );
 }

@@ -31,8 +31,8 @@ export const Route = createFileRoute("/ministries/campus")({
         "One-on-one discipleship",
       ]}
       leaders={[
-        { name: "Pastor Brian Kiptoo", role: "Campus Trends Pastor" },
-        { name: "Cynthia Achieng", role: "Discipleship Coach" },
+        { name: "Richard", role: "Campus Trends Pastor" },
+        { name: "Tito", role: "Discipleship Coach" },
         { name: "Michael Wafula", role: "Missions" },
         { name: "Esther Muthoni", role: "Freshers' Lead" },
       ]}

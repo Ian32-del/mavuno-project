@@ -18,19 +18,21 @@ export const Route = createFileRoute("/events")({
   component: EventsPage,
 });
 
-const hardcodedEvents = [
-  { id: "hc-1", event_date: "2026-02-14T19:00:00", title: "MYA Single's Night", location: "Hill City Grounds", ministry_slug: "MYA", registration_url: null },
-  { id: "hc-2", event_date: "2026-02-22T10:00:00", title: "MYF Fashion Show", location: "Karura Grounds", ministry_slug: "MYF", registration_url: null },
-  { id: "hc-3", event_date: "2026-03-01T09:00:00", title: "Campus Leaders Summit", location: "USIU Nairobi", ministry_slug: "Campus", registration_url: null },
-  { id: "hc-4", event_date: "2026-03-21T20:00:00", title: "All-Youth Prayer Night", location: "Bellevue Campus", ministry_slug: "All", registration_url: null },
-  { id: "hc-5", event_date: "2026-04-10T08:00:00", title: "Ignite Camp 2026", location: "Lake Naivasha", ministry_slug: "All", registration_url: null },
-  { id: "hc-6", event_date: "2026-05-03T17:00:00", title: "MYF Cooking Night", location: "MYF Zone", ministry_slug: "MYF", registration_url: null },
-];
+type EventRow = {
+  id: string;
+  title: string;
+  event_date: string;
+  location: string | null;
+  ministry_slug: string | null;
+  registration_url: string | null;
+};
 
 function EventsPage() {
-  const [events, setEvents] = useState<any[]>([]);
+  const [events, setEvents] = useState<EventRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [failed, setFailed] = useState(false);
 
+  /* Everything here comes from Admin, Events. Only published events with a date still ahead are shown. */
   useEffect(() => {
     supabase
       .from("events")
@@ -38,12 +40,9 @@ function EventsPage() {
       .eq("published", true)
       .gte("event_date", new Date().toISOString())
       .order("event_date", { ascending: true })
-      .then(({ data }) => {
-        const dbEvents = data ?? [];
-        const merged = [...hardcodedEvents, ...dbEvents].sort(
-          (a, b) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime()
-        );
-        setEvents(merged);
+      .then(({ data, error }) => {
+        if (error) setFailed(true);
+        setEvents((data ?? []) as EventRow[]);
         setLoading(false);
       });
   }, []);
@@ -53,17 +52,18 @@ function EventsPage() {
       <PageHero
         eyebrow="Events"
         title={<>Show up. <span className="text-brand">Something's happening.</span></>}
-        subtitle="Worship nights, summits, camps, prayer meetings — the Mavuno Youth calendar is always full and always free."
+        subtitle="Worship nights, summits, camps, prayer meetings. The Mavuno Youth calendar is always full and always free."
       />
       <section className="bg-background py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          {loading && <div className="py-16 text-center text-muted-foreground">Loading events...</div>}
 
-          {loading && (
-            <div className="text-center text-muted-foreground py-16">Loading events...</div>
+          {!loading && failed && (
+            <div className="py-16 text-center text-muted-foreground">We could not load the events right now. Please try again shortly.</div>
           )}
 
-          {!loading && events.length === 0 && (
-            <div className="text-center text-muted-foreground py-16">No upcoming events at the moment. Check back soon.</div>
+          {!loading && !failed && events.length === 0 && (
+            <div className="py-16 text-center text-muted-foreground">No upcoming events at the moment. Check back soon.</div>
           )}
 
           {!loading && events.length > 0 && (
@@ -96,7 +96,7 @@ function EventsPage() {
                         </div>
                       </div>
                     </div>
-                    {e.registration_url ? (
+                    {e.registration_url && (
                       <a
                         href={e.registration_url}
                         target="_blank"
@@ -105,10 +105,6 @@ function EventsPage() {
                       >
                         RSVP
                       </a>
-                    ) : (
-                      <button className="rounded-md border border-input bg-background px-4 py-2 text-sm font-semibold hover:border-brand hover:text-brand">
-                        RSVP
-                      </button>
                     )}
                   </div>
                 );
@@ -117,7 +113,7 @@ function EventsPage() {
           )}
 
           <p className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
-            <CalendarDays className="h-4 w-4" /> Add to your calendar — subscribe via ICS link (coming soon).
+            <CalendarDays className="h-4 w-4" /> Add to your calendar: subscribe via ICS link (coming soon).
           </p>
         </div>
       </section>

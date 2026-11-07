@@ -5,6 +5,9 @@ import { ArrowLeft } from "lucide-react";
 import myfImage from "@/assets/ministry-myf.jpeg";
 import myaImage from "@/assets/ministry-mya.jpeg";
 import campusImage from "@/assets/ministry-campus.jpeg";
+import { useSiteImage } from "@/lib/site-images";
+
+
 
 const ministries = [
   {
@@ -30,6 +33,7 @@ const ministries = [
   },
 ];
 
+
 export const Route = createFileRoute("/ministries")({
   component: RouteComponent,
 });
@@ -44,14 +48,16 @@ function RouteComponent() {
 
   return (
     <>
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-6">
-        <Link
-          to="/ministries"
-          className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-brand transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Ministries
-        </Link>
+      <div className="bg-ink">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-6">
+          <Link
+            to="/ministries"
+            className="inline-flex items-center gap-2 text-sm font-bold text-white transition-colors hover:text-brand"
+          >
+            <ArrowLeft className="h-4 w-4 text-brand" />
+            Back to Ministries
+          </Link>
+        </div>
       </div>
       <Outlet />
     </>
@@ -61,6 +67,12 @@ function RouteComponent() {
 
 
 function MinistriesListPage() {
+
+  const ministryImgs: Record<string, string> = {
+    myf: useSiteImage("myf_hero", myfImage),
+    mya: useSiteImage("mya_hero", myaImage),
+    campus: useSiteImage("campus_hero", campusImage),
+  };
   return (
     <section className="bg-background py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -88,7 +100,7 @@ function MinistriesListPage() {
             >
               <div className="relative aspect-[4/5] overflow-hidden">
                 <img
-                  src={m.img}
+                  src={ministryImgs[m.slug]}
                   alt={m.title}
                   loading="lazy"
                   className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
