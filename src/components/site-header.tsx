@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Menu, X, Flame } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import mavunoLogo from "@/assets/mavuno-logo.svg";
 
 const nav = [
   { to: "/", label: "Home" },
@@ -20,12 +21,11 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   return (
     <header className="sticky top-0 z-50 border-b border-border/40 bg-ink text-ink-foreground backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link to="/" className="flex items-center gap-2 font-display text-xl tracking-tight">
-          <span className="grid h-9 w-9 place-items-center rounded-sm bg-brand text-brand-foreground">
-            <Flame className="h-5 w-5" strokeWidth={2.5} />
-          </span>
-          <span className="text-display text-lg">MAVUNO<span className="text-brand">.</span>YOUTH</span>
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <Link to="/" className="flex items-center gap-3" aria-label="Mavuno Youth home">
+          <img src={mavunoLogo} alt="Mavuno Church" className="h-14 w-auto" />
+          <span className="hidden h-8 w-px bg-white/25 sm:block" aria-hidden="true" />
+          <span className="text-display hidden text-xl tracking-wide text-brand sm:block">YOUTH</span>
         </Link>
         <nav className="hidden items-center gap-1 lg:flex">
           {nav.map((n) => (

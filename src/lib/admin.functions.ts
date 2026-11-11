@@ -16,7 +16,6 @@ async function ensureAdmin(ctx: { supabase: any; userId: string }, allowed?: Rol
 export const getMyRoles = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    console.log('SERVICE_ROLE_KEY:', process.env.SUPABASE_SERVICE_ROLE_KEY ? '✅ set' : '❌ missing');
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("user_roles")
@@ -26,29 +25,29 @@ export const getMyRoles = createServerFn({ method: "GET" })
     return { roles: (data ?? []).map((r: any) => r.role) as Role[], userId: context.userId };
   });
   
-export const getDashboardStats = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    await ensureAdmin(context);
-    const [events, media, sermons, resources, upcoming, recentMedia] = await Promise.all([
-      context.supabase.from("events").select("id", { count: "exact", head: true }),
-      context.supabase.from("media").select("id", { count: "exact", head: true }),
-      context.supabase.from("sermons").select("id", { count: "exact", head: true }),
-      context.supabase.from("resources").select("id", { count: "exact", head: true }),
-      context.supabase.from("events").select("id,title,event_date,location").gte("event_date", new Date().toISOString()).order("event_date").limit(5),
-      context.supabase.from("media").select("id,title,url,type,created_at").order("created_at", { ascending: false }).limit(6),
-    ]);
-    return {
-      totals: {
-        events: events.count ?? 0,
-        media: media.count ?? 0,
-        sermons: sermons.count ?? 0,
-        resources: resources.count ?? 0,
-      },
-      upcoming: upcoming.data ?? [],
-      recentMedia: recentMedia.data ?? [],
-    };
-  });
+// export const getDashboardStats = createServerFn({ method: "GET" })
+//   .middleware([requireSupabaseAuth])
+//   .handler(async ({ context }) => {
+//     await ensureAdmin(context);
+//     const [events, media, sermons, resources, upcoming, recentMedia] = await Promise.all([
+//       context.supabase.from("events").select("id", { count: "exact", head: true }),
+//       context.supabase.from("media").select("id", { count: "exact", head: true }),
+//       context.supabase.from("sermons").select("id", { count: "exact", head: true }),
+//       context.supabase.from("resources").select("id", { count: "exact", head: true }),
+//       context.supabase.from("events").select("id,title,event_date,location").gte("event_date", new Date().toISOString()).order("event_date").limit(5),
+//       context.supabase.from("media").select("id,title,url,type,created_at").order("created_at", { ascending: false }).limit(6),
+//     ]);
+//     return {
+//       totals: {
+//         events: events.count ?? 0,
+//         media: media.count ?? 0,
+//         sermons: sermons.count ?? 0,
+//         resources: resources.count ?? 0,
+//       },
+//       upcoming: upcoming.data ?? [],
+//       recentMedia: recentMedia.data ?? [],
+//     };
+//   });
 
 // EVENTS
 const eventSchema = z.object({
@@ -331,6 +330,7 @@ export const listUsersWithRoles = createServerFn({ method: "GET" })
     return (userList.users ?? []).map((u) => ({
       id: u.id,
       email: u.email ?? "",
+      full_name: (u.user_metadata?.full_name as string | undefined) ?? "",
       created_at: u.created_at,
       roles: byUser.get(u.id) ?? [],
     }));
@@ -340,6 +340,7 @@ export const inviteUser = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((d: unknown) =>
     z.object({
+      full_name: z.string().max(120).optional(),
       email: z.string().email(),
       role: z.enum(["super_admin", "pastor", "ministry_leader"]),
       password: z.string().min(8).max(100),
@@ -352,6 +353,7 @@ export const inviteUser = createServerFn({ method: "POST" })
       email: data.email,
       password: data.password,
       email_confirm: true,
+      user_metadata: data.full_name ? { full_name: data.full_name } : undefined,
     });
     if (error) throw new Error(error.message);
     if (!created.user) throw new Error("User not created");

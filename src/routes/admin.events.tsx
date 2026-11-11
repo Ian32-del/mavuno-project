@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { listEvents, upsertEvent, deleteEvent } from "@/lib/admin.functions";
@@ -81,27 +81,39 @@ function EventsPage() {
   );
 }
 
+/* Turns a stored date into the local value a datetime-local input expects */
+function toLocalInput(iso: string) {
+  const d = new Date(iso);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function defaults(e: any) {
+  return {
+    id: e?.id,
+    title: e?.title ?? "",
+    description: e?.description ?? "",
+    event_date: e?.event_date ? toLocalInput(e.event_date) : "",
+    location: e?.location ?? "",
+    registration_url: e?.registration_url ?? "",
+    image_url: e?.image_url ?? "",
+    ministry_slug: e?.ministry_slug ?? "",
+    published: e?.published ?? true,
+  };
+}
+
 function EventDialog({ open, setOpen, editing, onSaved }: any) {
   const save = useServerFn(upsertEvent);
   const [form, setForm] = useState(() => defaults(editing));
   const [busy, setBusy] = useState(false);
 
-  function defaults(e: any) {
-    return {
-      id: e?.id,
-      title: e?.title ?? "",
-      description: e?.description ?? "",
-      event_date: e?.event_date ? new Date(e.event_date).toISOString().slice(0, 16) : "",
-      location: e?.location ?? "",
-      registration_url: e?.registration_url ?? "",
-      image_url: e?.image_url ?? "",
-      ministry_slug: e?.ministry_slug ?? "",
-      published: e?.published ?? true,
-    };
-  }
+  // Fill the form with the event being edited (or blank for a new one) every time the dialog opens
+  useEffect(() => {
+    if (open) setForm(defaults(editing));
+  }, [open, editing]);
 
   return (
-    <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (v) setForm(defaults(editing)); }}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader><DialogTitle>{editing ? "Edit event" : "New event"}</DialogTitle></DialogHeader>
         <form

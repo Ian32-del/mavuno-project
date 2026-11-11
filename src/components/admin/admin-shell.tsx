@@ -1,5 +1,6 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, CalendarDays, ImageIcon, Users, Church, LogOut, Flame, HeartHandshake, Mail } from "lucide-react";
+import { useEffect } from "react";
+import { LayoutDashboard, CalendarDays, ImageIcon, Users, Church, LogOut, Flame, HeartHandshake, Mail, BookOpen, HandHeart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -7,16 +8,24 @@ import type { ReactNode } from "react";
 
 type Role = "super_admin" | "pastor" | "ministry_leader";
 
-const NAV: { to: string; label: string; icon: typeof LayoutDashboard; roles?: Role[] }[] = [
-  { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/admin/events", label: "Events", icon: CalendarDays },
-  { to: "/admin/messages", label: "Messages", icon: Mail },
+/*
+  roles    : which roles see the item. Leave out for everyone allowed in.
+  leaderOk : ministry leaders may see it. Leaders get Dashboard, Events, Messages and My prayer requests only.
+*/
+const NAV: { to: string; label: string; icon: typeof LayoutDashboard; roles?: Role[]; leaderOk?: boolean }[] = [
+  { to: "/admin", label: "Dashboard", icon: LayoutDashboard, leaderOk: true },
+  { to: "/admin/events", label: "Events", icon: CalendarDays, leaderOk: true },
+  { to: "/admin/messages", label: "Messages", icon: Mail, leaderOk: true },
+  { to: "/admin/my-prayer", label: "My prayer requests", icon: HandHeart, roles: ["pastor", "ministry_leader"], leaderOk: true },
   { to: "/admin/media", label: "Featured photos", icon: ImageIcon },
   { to: "/admin/ministries", label: "Ministries", icon: Church },
   { to: "/admin/salvation", label: "Salvation", icon: Flame },
+  { to: "/admin/stories", label: "Stories", icon: BookOpen },
   { to: "/admin/prayer", label: "Prayer requests", icon: HeartHandshake },
   { to: "/admin/users", label: "Users", icon: Users, roles: ["super_admin"] },
 ];
+
+const isActive = (pathname: string, to: string) => (to === "/admin" ? pathname === "/admin" : pathname.startsWith(to));
 
 export function AdminShell({ children, roles, email }: { children: ReactNode; roles: Role[]; email: string }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -27,7 +36,15 @@ export function AdminShell({ children, roles, email }: { children: ReactNode; ro
     navigate({ to: "/", replace: true });
   }
 
-  const items = NAV.filter((n) => !n.roles || n.roles.some((r) => roles.includes(r)));
+  const isFullAdmin = roles.includes("super_admin") || roles.includes("pastor");
+  const items = NAV.filter((n) => (isFullAdmin || n.leaderOk) && (!n.roles || n.roles.some((r) => roles.includes(r))));
+
+  // If someone types an address they are not allowed to open, send them back to the dashboard
+  useEffect(() => {
+    if (pathname !== "/admin" && !items.some((i) => isActive(pathname, i.to))) {
+      navigate({ to: "/admin", replace: true });
+    }
+  }, [pathname, items, navigate]);
 
   return (
     <div className="flex min-h-dvh bg-neutral-50 text-neutral-900">
@@ -38,7 +55,7 @@ export function AdminShell({ children, roles, email }: { children: ReactNode; ro
         </div>
         <nav className="flex-1 p-3 space-y-1">
           {items.map(({ to, label, icon: Icon }) => {
-            const active = to === "/admin" ? pathname === "/admin" : pathname.startsWith(to);
+            const active = isActive(pathname, to);
             return (
               <Link
                 key={to}
@@ -70,7 +87,7 @@ export function AdminShell({ children, roles, email }: { children: ReactNode; ro
         <div className="md:hidden overflow-x-auto border-b border-neutral-200 bg-white">
           <div className="flex gap-1 p-2 whitespace-nowrap">
             {items.map(({ to, label }) => {
-              const active = to === "/admin" ? pathname === "/admin" : pathname.startsWith(to);
+              const active = isActive(pathname, to);
               return (
                 <Link key={to} to={to} className={cn(
                   "px-3 py-1.5 rounded text-xs font-medium",

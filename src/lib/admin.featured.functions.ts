@@ -15,6 +15,9 @@ async function ensureAdmin(ctx: { supabase: any; userId: string }, allowed?: Rol
   return roles;
 }
 
+// The only photo spots an admin can change
+export const EDITABLE_SLOTS = ["home_hero", "myf_hero", "mya_hero", "campus_hero"] as const;
+
 export type SiteImageRow = {
   slot: string
   label: string
@@ -32,6 +35,7 @@ export const listSiteImages = createServerFn({ method: "GET" })
     const { data, error } = await (context.supabase as any)
       .from("site_images")
       .select("*")
+      .in("slot", [...EDITABLE_SLOTS])
       .order("sort_order");
     if (error) throw new Error(error.message);
     return (data ?? []) as SiteImageRow[];
@@ -41,7 +45,7 @@ export const setSiteImage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((d: unknown) =>
     z.object({
-      slot: z.string().min(1).max(60),
+      slot: z.enum(EDITABLE_SLOTS),
       image_url: z.string().url().nullable(),
       alt: z.string().max(200).optional().nullable(),
     }).parse(d),

@@ -2,8 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getDashboardStats } from "@/lib/admin.submissions.functions";
+import { getMyRoles, listMyPrayer } from "@/lib/admin.prayer.functions";
 import { Card } from "@/components/ui/card";
-import { CalendarDays, Flame, HeartHandshake, ImageIcon, Mail } from "lucide-react";
+import { CalendarDays, Flame, HandHeart, HeartHandshake, ImageIcon, Mail } from "lucide-react";
 
 export const Route = createFileRoute("/admin/")({
   component: Dashboard,
@@ -11,16 +12,58 @@ export const Route = createFileRoute("/admin/")({
 
 const formatDate = (value: string) => new Date(value).toLocaleDateString("en-KE", { day: "2-digit", month: "short" });
 
+/* What a ministry leader sees: only their own work */
+function LeaderHome() {
+  const mine = useServerFn(listMyPrayer);
+  const { data = [] } = useQuery({ queryKey: ["my-prayer"], queryFn: () => mine() });
+  const open = data.filter((r: any) => r.status !== "done").length;
+
+  const links = [
+    { label: "Events", note: "Create and update events", icon: CalendarDays, to: "/admin/events" },
+    { label: "Messages", note: "Read messages sent through the website", icon: Mail, to: "/admin/messages" },
+    { label: "My prayer requests", note: `${open} waiting for you`, icon: HandHeart, to: "/admin/my-prayer" },
+  ];
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold">Welcome</h1>
+        <p className="mt-1 text-neutral-500">Here is what you can work on.</p>
+      </div>
+      <div className="grid gap-4 sm:grid-cols-3">
+        {links.map((l) => (
+          <Link key={l.label} to={l.to}>
+            <Card className="h-full border-l-4 border-l-orange-500 p-5 transition-shadow hover:shadow-md">
+              <div className="flex items-center justify-between gap-2">
+                <div className="font-semibold">{l.label}</div>
+                <l.icon className="h-4 w-4 shrink-0 text-orange-500" />
+              </div>
+              <div className="mt-2 text-sm text-neutral-500">{l.note}</div>
+            </Card>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function Dashboard() {
+  const rolesFn = useServerFn(getMyRoles);
+  const { data: roles, isLoading: rolesLoading } = useQuery({ queryKey: ["my-roles"], queryFn: () => rolesFn() });
+  const isFullAdmin = !!roles?.some((r: string) => r === "super_admin" || r === "pastor");
+
   const fn = useServerFn(getDashboardStats);
-  const { data, isLoading } = useQuery({ queryKey: ["admin-stats"], queryFn: () => fn() });
+  const { data, isLoading } = useQuery({ queryKey: ["admin-stats"], queryFn: () => fn(), enabled: isFullAdmin });
+
+  if (rolesLoading) return <p className="text-neutral-500">Loading...</p>;
+  if (!isFullAdmin) return <LeaderHome />;
 
   const cards = [
     { label: "Events", value: data?.totals.events ?? 0, icon: CalendarDays, to: "/admin/events" },
     { label: "Featured photos set", value: data?.totals.photos ?? 0, icon: ImageIcon, to: "/admin/media" },
     { label: "New messages", value: data?.totals.messagesNew ?? 0, icon: Mail, to: "/admin/messages" },
     { label: "New salvation decisions", value: data?.totals.salvationNew ?? 0, icon: Flame, to: "/admin/salvation" },
-    { label: "New prayer requests", value: data?.totals.prayerNew ?? 0, icon: HeartHandshake, to: "/admin/prayer" },
+    { label: "Prayer requests to assign", value: data?.totals.prayerNew ?? 0, icon: HeartHandshake, to: "/admin/prayer" },
   ];
 
   return (

@@ -2,8 +2,11 @@ import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Check } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
+import { MinistryLeaders } from "@/components/ministry-leaders";
+import { useSiteImage } from "@/lib/site-images";
 
 export interface MinistryPageProps {
+  slug: "myf" | "mya" | "campus";
   eyebrow: string;
   title: ReactNode;
   subtitle: string;
@@ -11,12 +14,16 @@ export interface MinistryPageProps {
   vision: string;
   mission: string;
   activities: string[];
+  /* Shown only until leaders have been added in Admin, Ministries */
   leaders: { name: string; role: string }[];
   meetTime: string;
   meetLocation: string;
 }
 
 export function MinistryPage(p: MinistryPageProps) {
+  // The photo an admin chose under Featured photos, or the built in one
+  const image = useSiteImage(`${p.slug}_hero`, p.image);
+
   return (
     <>
       <PageHero eyebrow={p.eyebrow} title={p.title} subtitle={p.subtitle} />
@@ -24,7 +31,7 @@ export function MinistryPage(p: MinistryPageProps) {
         <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:px-8">
           <div className="lg:col-span-7">
             <div className="overflow-hidden rounded-2xl">
-              <img src={p.image} alt={p.eyebrow} loading="lazy" className="aspect-[4/3] w-full object-cover" />
+              <img src={image} alt={p.eyebrow} loading="lazy" className="aspect-[4/3] w-full object-cover" />
             </div>
           </div>
           <div className="space-y-8 lg:col-span-5">
@@ -61,20 +68,7 @@ export function MinistryPage(p: MinistryPageProps) {
         </div>
       </section>
 
-      <section className="bg-background py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-display text-4xl sm:text-5xl">Leadership</h2>
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {p.leaders.map((l) => (
-              <div key={l.name} className="rounded-xl border border-border bg-card p-6">
-                <div className="aspect-square rounded-md bg-ember" />
-                <h3 className="mt-4 font-display text-xl">{l.name}</h3>
-                <p className="text-sm text-muted-foreground">{l.role}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <MinistryLeaders slug={p.slug} fallback={p.leaders} />
 
       <section className="bg-ember py-20 text-brand-foreground">
         <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">

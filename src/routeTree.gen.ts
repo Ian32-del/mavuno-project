@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VisitRouteImport } from './routes/visit'
 import { Route as StoriesRouteImport } from './routes/stories'
+import { Route as ShareStoryRouteImport } from './routes/share-story'
 import { Route as SermonsRouteImport } from './routes/sermons'
 import { Route as SalvationRouteImport } from './routes/salvation'
 import { Route as PrayerRouteImport } from './routes/prayer'
@@ -28,9 +29,11 @@ import { Route as MinistriesMyfRouteImport } from './routes/ministries.myf'
 import { Route as MinistriesMyaRouteImport } from './routes/ministries.mya'
 import { Route as MinistriesCampusRouteImport } from './routes/ministries.campus'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminStoriesRouteImport } from './routes/admin.stories'
 import { Route as AdminSalvationRouteImport } from './routes/admin.salvation'
 import { Route as AdminResourcesRouteImport } from './routes/admin.resources'
 import { Route as AdminPrayerRouteImport } from './routes/admin.prayer'
+import { Route as AdminMyPrayerRouteImport } from './routes/admin.my-prayer'
 import { Route as AdminMinistriesRouteImport } from './routes/admin.ministries'
 import { Route as AdminMessagesRouteImport } from './routes/admin.messages'
 import { Route as AdminMediaRouteImport } from './routes/admin.media'
@@ -45,6 +48,11 @@ const VisitRoute = VisitRouteImport.update({
 const StoriesRoute = StoriesRouteImport.update({
   id: '/stories',
   path: '/stories',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShareStoryRoute = ShareStoryRouteImport.update({
+  id: '/share-story',
+  path: '/share-story',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SermonsRoute = SermonsRouteImport.update({
@@ -132,6 +140,11 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminStoriesRoute = AdminStoriesRouteImport.update({
+  id: '/stories',
+  path: '/stories',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminSalvationRoute = AdminSalvationRouteImport.update({
   id: '/salvation',
   path: '/salvation',
@@ -145,6 +158,11 @@ const AdminResourcesRoute = AdminResourcesRouteImport.update({
 const AdminPrayerRoute = AdminPrayerRouteImport.update({
   id: '/prayer',
   path: '/prayer',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMyPrayerRoute = AdminMyPrayerRouteImport.update({
+  id: '/my-prayer',
+  path: '/my-prayer',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminMinistriesRoute = AdminMinistriesRouteImport.update({
@@ -186,6 +204,7 @@ export interface FileRoutesByFullPath {
   '/prayer': typeof PrayerRoute
   '/salvation': typeof SalvationRoute
   '/sermons': typeof SermonsRoute
+  '/share-story': typeof ShareStoryRoute
   '/stories': typeof StoriesRoute
   '/visit': typeof VisitRoute
   '/sitemap/': typeof SitemapRoute
@@ -193,9 +212,11 @@ export interface FileRoutesByFullPath {
   '/admin/media': typeof AdminMediaRoute
   '/admin/messages': typeof AdminMessagesRoute
   '/admin/ministries': typeof AdminMinistriesRoute
+  '/admin/my-prayer': typeof AdminMyPrayerRoute
   '/admin/prayer': typeof AdminPrayerRoute
   '/admin/resources': typeof AdminResourcesRoute
   '/admin/salvation': typeof AdminSalvationRoute
+  '/admin/stories': typeof AdminStoriesRoute
   '/admin/users': typeof AdminUsersRoute
   '/ministries/campus': typeof MinistriesCampusRoute
   '/ministries/mya': typeof MinistriesMyaRoute
@@ -214,6 +235,7 @@ export interface FileRoutesByTo {
   '/prayer': typeof PrayerRoute
   '/salvation': typeof SalvationRoute
   '/sermons': typeof SermonsRoute
+  '/share-story': typeof ShareStoryRoute
   '/stories': typeof StoriesRoute
   '/visit': typeof VisitRoute
   '/sitemap': typeof SitemapRoute
@@ -221,9 +243,11 @@ export interface FileRoutesByTo {
   '/admin/media': typeof AdminMediaRoute
   '/admin/messages': typeof AdminMessagesRoute
   '/admin/ministries': typeof AdminMinistriesRoute
+  '/admin/my-prayer': typeof AdminMyPrayerRoute
   '/admin/prayer': typeof AdminPrayerRoute
   '/admin/resources': typeof AdminResourcesRoute
   '/admin/salvation': typeof AdminSalvationRoute
+  '/admin/stories': typeof AdminStoriesRoute
   '/admin/users': typeof AdminUsersRoute
   '/ministries/campus': typeof MinistriesCampusRoute
   '/ministries/mya': typeof MinistriesMyaRoute
@@ -244,6 +268,7 @@ export interface FileRoutesById {
   '/prayer': typeof PrayerRoute
   '/salvation': typeof SalvationRoute
   '/sermons': typeof SermonsRoute
+  '/share-story': typeof ShareStoryRoute
   '/stories': typeof StoriesRoute
   '/visit': typeof VisitRoute
   '/sitemap/': typeof SitemapRoute
@@ -251,9 +276,11 @@ export interface FileRoutesById {
   '/admin/media': typeof AdminMediaRoute
   '/admin/messages': typeof AdminMessagesRoute
   '/admin/ministries': typeof AdminMinistriesRoute
+  '/admin/my-prayer': typeof AdminMyPrayerRoute
   '/admin/prayer': typeof AdminPrayerRoute
   '/admin/resources': typeof AdminResourcesRoute
   '/admin/salvation': typeof AdminSalvationRoute
+  '/admin/stories': typeof AdminStoriesRoute
   '/admin/users': typeof AdminUsersRoute
   '/ministries/campus': typeof MinistriesCampusRoute
   '/ministries/mya': typeof MinistriesMyaRoute
@@ -275,6 +302,7 @@ export interface FileRouteTypes {
     | '/prayer'
     | '/salvation'
     | '/sermons'
+    | '/share-story'
     | '/stories'
     | '/visit'
     | '/sitemap/'
@@ -282,9 +310,11 @@ export interface FileRouteTypes {
     | '/admin/media'
     | '/admin/messages'
     | '/admin/ministries'
+    | '/admin/my-prayer'
     | '/admin/prayer'
     | '/admin/resources'
     | '/admin/salvation'
+    | '/admin/stories'
     | '/admin/users'
     | '/ministries/campus'
     | '/ministries/mya'
@@ -303,6 +333,7 @@ export interface FileRouteTypes {
     | '/prayer'
     | '/salvation'
     | '/sermons'
+    | '/share-story'
     | '/stories'
     | '/visit'
     | '/sitemap'
@@ -310,9 +341,11 @@ export interface FileRouteTypes {
     | '/admin/media'
     | '/admin/messages'
     | '/admin/ministries'
+    | '/admin/my-prayer'
     | '/admin/prayer'
     | '/admin/resources'
     | '/admin/salvation'
+    | '/admin/stories'
     | '/admin/users'
     | '/ministries/campus'
     | '/ministries/mya'
@@ -332,6 +365,7 @@ export interface FileRouteTypes {
     | '/prayer'
     | '/salvation'
     | '/sermons'
+    | '/share-story'
     | '/stories'
     | '/visit'
     | '/sitemap/'
@@ -339,9 +373,11 @@ export interface FileRouteTypes {
     | '/admin/media'
     | '/admin/messages'
     | '/admin/ministries'
+    | '/admin/my-prayer'
     | '/admin/prayer'
     | '/admin/resources'
     | '/admin/salvation'
+    | '/admin/stories'
     | '/admin/users'
     | '/ministries/campus'
     | '/ministries/mya'
@@ -362,6 +398,7 @@ export interface RootRouteChildren {
   PrayerRoute: typeof PrayerRoute
   SalvationRoute: typeof SalvationRoute
   SermonsRoute: typeof SermonsRoute
+  ShareStoryRoute: typeof ShareStoryRoute
   StoriesRoute: typeof StoriesRoute
   VisitRoute: typeof VisitRoute
   SitemapRoute: typeof SitemapRoute
@@ -381,6 +418,13 @@ declare module '@tanstack/react-router' {
       path: '/stories'
       fullPath: '/stories'
       preLoaderRoute: typeof StoriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/share-story': {
+      id: '/share-story'
+      path: '/share-story'
+      fullPath: '/share-story'
+      preLoaderRoute: typeof ShareStoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sermons': {
@@ -502,6 +546,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/stories': {
+      id: '/admin/stories'
+      path: '/stories'
+      fullPath: '/admin/stories'
+      preLoaderRoute: typeof AdminStoriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/salvation': {
       id: '/admin/salvation'
       path: '/salvation'
@@ -521,6 +572,13 @@ declare module '@tanstack/react-router' {
       path: '/prayer'
       fullPath: '/admin/prayer'
       preLoaderRoute: typeof AdminPrayerRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/my-prayer': {
+      id: '/admin/my-prayer'
+      path: '/my-prayer'
+      fullPath: '/admin/my-prayer'
+      preLoaderRoute: typeof AdminMyPrayerRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/ministries': {
@@ -566,9 +624,11 @@ interface AdminRouteChildren {
   AdminMediaRoute: typeof AdminMediaRoute
   AdminMessagesRoute: typeof AdminMessagesRoute
   AdminMinistriesRoute: typeof AdminMinistriesRoute
+  AdminMyPrayerRoute: typeof AdminMyPrayerRoute
   AdminPrayerRoute: typeof AdminPrayerRoute
   AdminResourcesRoute: typeof AdminResourcesRoute
   AdminSalvationRoute: typeof AdminSalvationRoute
+  AdminStoriesRoute: typeof AdminStoriesRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -578,9 +638,11 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminMediaRoute: AdminMediaRoute,
   AdminMessagesRoute: AdminMessagesRoute,
   AdminMinistriesRoute: AdminMinistriesRoute,
+  AdminMyPrayerRoute: AdminMyPrayerRoute,
   AdminPrayerRoute: AdminPrayerRoute,
   AdminResourcesRoute: AdminResourcesRoute,
   AdminSalvationRoute: AdminSalvationRoute,
+  AdminStoriesRoute: AdminStoriesRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
@@ -616,6 +678,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrayerRoute: PrayerRoute,
   SalvationRoute: SalvationRoute,
   SermonsRoute: SermonsRoute,
+  ShareStoryRoute: ShareStoryRoute,
   StoriesRoute: StoriesRoute,
   VisitRoute: VisitRoute,
   SitemapRoute: SitemapRoute,

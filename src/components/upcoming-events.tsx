@@ -8,6 +8,7 @@ type EventRow = {
   title: string;
   event_date: string;
   location: string | null;
+  image_url: string | null;
 };
 
 const HOW_MANY = 3;
@@ -20,7 +21,7 @@ export function UpcomingEvents() {
   useEffect(() => {
     supabase
       .from("events")
-      .select("id,title,event_date,location")
+      .select("id,title,event_date,location,image_url")
       .eq("published", true)
       .gte("event_date", new Date().toISOString())
       .order("event_date", { ascending: true })
@@ -57,11 +58,14 @@ export function UpcomingEvents() {
             {events.map((e) => {
               const date = new Date(e.event_date).toLocaleDateString("en-KE", { weekday: "short", day: "2-digit", month: "short" });
               return (
-                <Link key={e.id} to="/events" className="group rounded-xl border border-border bg-card p-6 transition hover:border-brand">
+                <Link key={e.id} to="/events" className="group overflow-hidden rounded-xl border border-border bg-card transition hover:border-brand">
+                  {e.image_url && <img src={e.image_url} alt={e.title} loading="lazy" className="h-40 w-full object-cover" />}
+                  <div className="p-6">
                   <Calendar className="h-5 w-5 text-brand" />
                   <div className="mt-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">{date}</div>
                   <h3 className="text-display mt-2 text-2xl">{e.title}</h3>
                   {e.location && <p className="mt-1 text-sm text-muted-foreground">{e.location}</p>}
+                  </div>
                 </Link>
               );
             })}

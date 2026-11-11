@@ -1,237 +1,168 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { toast } from "sonner";
-import { HeartHandshake, Search } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
-  deletePrayerRequest,
-  listPrayerRequests,
-  updatePrayerRequest,
-  type PrayerRow,
+  listAllPrayer,
+  listAssignableLeaders,
+  assignPrayer,
+  type PrayerAdminRow,
   type PrayerStatus,
-} from "@/lib/admin.submissions.functions";
+  type AssignableLeader,
+} from "@/lib/admin.prayer.functions";
+import { deletePrayerRequest } from "@/lib/admin.submissions.functions";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Phone, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
-export const Route = createFileRoute("/admin/prayer")({
-  component: PrayerAdmin,
-});
+export const Route = createFileRoute("/admin/prayer")({ component: PrayerAdminPage });
 
-const STATUS_LABEL: Record<PrayerStatus, string> = { new: "New", prayed: "Prayed for" };
-const STATUS_STYLE: Record<PrayerStatus, string> = {
-  new: "bg-orange-100 text-orange-700",
-  prayed: "bg-green-100 text-green-700",
+const STATUS_LABEL: Record<PrayerStatus, string> = {
+  new: "Not assigned",
+  assigned: "Assigned",
+  in_progress: "In progress",
+  done: "Done",
 };
 
-const selectClass = "h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500";
+const STATUS_STYLE: Record<PrayerStatus, string> = {
+  new: "bg-orange-100 text-orange-700",
+  assigned: "bg-blue-100 text-blue-700",
+  in_progress: "bg-purple-100 text-purple-700",
+  done: "bg-green-100 text-green-700",
+};
 
-const formatDate = (value: string) => new Date(value).toLocaleDateString("en-KE", { day: "2-digit", month: "short", year: "numeric" });
+const FILTERS: { value: "all" | PrayerStatus; label: string }[] = [
+  { value: "all", label: "All" },
+  { value: "new", label: "Not assigned" },
+  { value: "assigned", label: "Assigned" },
+  { value: "in_progress", label: "In progress" },
+  { value: "done", label: "Done" },
+];
 
-function PrayerAdmin() {
-  const list = useServerFn(listPrayerRequests);
-  const update = useServerFn(updatePrayerRequest);
-  const remove = useServerFn(deletePrayerRequest);
-  const queryClient = useQueryClient();
+const leaderLabel = (l: AssignableLeader) => l.full_name || l.email;
 
-  const { data, isLoading, error } = useQuery({ queryKey: ["admin-prayer"], queryFn: () => list() });
+function PrayerAdminPage() {
+  const list = useServerFn(listAllPrayer);
+  const leadersFn = useServerFn(listAssignableLeaders);
+  const assign = useServerFn(assignPrayer);
+  const del = useServerFn(deletePrayerRequest);
+  const qc = useQueryClient();
+  const [filter, setFilter] = useState<"all" | PrayerStatus>("all");
 
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [typeFilter, setTypeFilter] = useState("all");
-  const [selected, setSelected] = useState<PrayerRow | null>(null);
-  const [status, setStatus] = useState<PrayerStatus>("new");
-  const [approved, setApproved] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false);
+  const { data = [], isLoading, error } = useQuery({ queryKey: ["admin-prayer"], queryFn: () => list() });
+  const { data: leaders = [] } = useQuery({ queryKey: ["assignable-leaders"], queryFn: () => leadersFn() });
 
-  const rows = data ?? [];
-  const shown = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    return rows.filter((r) => {
-      if (statusFilter !== "all" && r.status !== statusFilter) return false;
-      if (typeFilter === "prayer" && r.is_praise) return false;
-      if (typeFilter === "praise" && !r.is_praise) return false;
-      if (!q) return true;
-      return [r.name, r.email ?? "", r.phone ?? "", r.request].some((v) => v.toLowerCase().includes(q));
-    });
-  }, [rows, search, statusFilter, typeFilter]);
+  const refresh = () => {
+    qc.invalidateQueries({ queryKey: ["admin-prayer"] });
+    qc.invalidateQueries({ queryKey: ["admin-stats"] });
+  };
 
-  const newCount = rows.filter((r) => r.status === "new").length;
-
-  function refresh() {
-    void queryClient.invalidateQueries({ queryKey: ["admin-prayer"] });
-    void queryClient.invalidateQueries({ queryKey: ["admin-stats"] });
-  }
-
-  const save = useMutation({
-    mutationFn: () => update({ data: { id: selected!.id, status, approved_public: approved } }),
-    onSuccess: () => {
-      toast.success("Saved");
-      setSelected(null);
-      refresh();
-    },
-    onError: (e: Error) => toast.error(e.message),
+  const assignMut = useMutation({
+    mutationFn: (v: { id: string; leader_id: string | null }) => assign({ data: v }),
+    onSuccess: (_r, v) => { toast.success(v.leader_id ? "Assigned" : "Unassigned"); refresh(); },
+    onError: (e: any) => toast.error(e.message),
   });
 
-  const del = useMutation({
-    mutationFn: () => remove({ data: { id: selected!.id } }),
-    onSuccess: () => {
-      toast.success("Deleted");
-      setSelected(null);
-      refresh();
-    },
-    onError: (e: Error) => toast.error(e.message === "Forbidden" ? "Only a super admin or pastor can delete this." : e.message),
+  const remove = useMutation({
+    mutationFn: (id: string) => del({ data: { id } }),
+    onSuccess: () => { toast.success("Deleted"); refresh(); },
+    onError: (e: any) => toast.error(e.message),
   });
 
-  function open(row: PrayerRow) {
-    setSelected(row);
-    setStatus(row.status);
-    setApproved(row.approved_public);
-    setConfirmDelete(false);
-  }
+  const leaderName = (id: string | null) => {
+    const l = leaders.find((x: AssignableLeader) => x.user_id === id);
+    return l ? leaderLabel(l) : null;
+  };
+
+  const rows = data.filter((r: PrayerAdminRow) => filter === "all" || r.status === filter);
+  const count = (f: "all" | PrayerStatus) => (f === "all" ? data.length : data.filter((r: PrayerAdminRow) => r.status === f).length);
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="flex items-center gap-2 text-3xl font-bold">
-          <HeartHandshake className="h-7 w-7 text-orange-500" />
-          Prayer requests
-        </h1>
-        <p className="mt-1 text-neutral-500">
-          Prayer requests and praise reports. {newCount > 0 ? `${newCount} not prayed for yet.` : "All have been prayed for."}
-        </p>
+        <h1 className="text-3xl font-bold">Prayer requests</h1>
+        <p className="text-neutral-500">Assign each request to a leader who will walk with the person, and watch how it is going.</p>
       </div>
 
-      <Card className="p-4">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <div className="relative max-w-sm flex-1">
-            <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
-            <Input className="pl-8" placeholder="Search name or request" value={search} onChange={(e) => setSearch(e.target.value)} />
-          </div>
-          <select className={selectClass} value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} aria-label="Type">
-            <option value="all">Requests and praise</option>
-            <option value="prayer">Prayer requests</option>
-            <option value="praise">Praise reports</option>
-          </select>
-          <select className={selectClass} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} aria-label="Status">
-            <option value="all">All statuses</option>
-            <option value="new">New</option>
-            <option value="prayed">Prayed for</option>
-          </select>
-        </div>
-      </Card>
+      {isLoading && <p className="text-neutral-500">Loading...</p>}
+      {error && <p className="text-sm text-red-600">Could not load requests. Run prayer_assignment_and_roles.sql in Supabase first. ({(error as Error).message})</p>}
 
-      <Card className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="bg-neutral-50 text-left text-xs uppercase tracking-wide text-neutral-500">
-            <tr>
-              <th className="px-4 py-3">Date</th>
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Type</th>
-              <th className="px-4 py-3">Request</th>
-              <th className="px-4 py-3">Prayer wall</th>
-              <th className="px-4 py-3">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {isLoading && (
-              <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-neutral-500">Loading...</td>
-              </tr>
-            )}
-            {error && (
-              <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-red-600">{(error as Error).message}</td>
-              </tr>
-            )}
-            {!isLoading && !error && shown.length === 0 && (
-              <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-neutral-500">
-                  {rows.length === 0 ? "No requests yet." : "Nothing matches your search."}
-                </td>
-              </tr>
-            )}
-            {shown.map((r) => (
-              <tr key={r.id} onClick={() => open(r)} className="cursor-pointer border-t border-neutral-100 hover:bg-neutral-50">
-                <td className="whitespace-nowrap px-4 py-3 text-neutral-500">{formatDate(r.created_at)}</td>
-                <td className="px-4 py-3 font-medium">{r.name}</td>
-                <td className="px-4 py-3">{r.is_praise ? "Praise" : "Prayer"}</td>
-                <td className="max-w-xs truncate px-4 py-3 text-neutral-600">{r.request}</td>
-                <td className="px-4 py-3 text-xs">
-                  {r.approved_public ? "Approved" : r.is_public ? "Asked to share" : "Private"}
-                </td>
-                <td className="px-4 py-3">
-                  <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${STATUS_STYLE[r.status]}`}>{STATUS_LABEL[r.status]}</span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Card>
+      <div className="flex flex-wrap gap-2">
+        {FILTERS.map((f) => (
+          <button
+            key={f.value}
+            onClick={() => setFilter(f.value)}
+            className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
+              filter === f.value ? "bg-orange-500 text-black" : "bg-white text-neutral-700 ring-1 ring-neutral-200 hover:bg-neutral-100"
+            }`}
+          >
+            {f.label} ({count(f.value)})
+          </button>
+        ))}
+      </div>
 
-      <Dialog open={selected !== null} onOpenChange={(next) => { if (!next) setSelected(null); }}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
-          {selected && (
-            <>
-              <DialogHeader>
-                <DialogTitle>{selected.is_praise ? "Praise report" : "Prayer request"} from {selected.name}</DialogTitle>
-                <DialogDescription>Sent on {formatDate(selected.created_at)}</DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4 text-sm">
-                <p className="whitespace-pre-wrap rounded-md bg-neutral-50 p-3">{selected.request}</p>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <div className="text-xs text-neutral-500">Email</div>
-                    {selected.email ? <a className="text-orange-600 hover:underline" href={`mailto:${selected.email}`}>{selected.email}</a> : "Not given"}
-                  </div>
-                  <div>
-                    <div className="text-xs text-neutral-500">Phone</div>
-                    {selected.phone ? <a className="text-orange-600 hover:underline" href={`tel:${selected.phone}`}>{selected.phone}</a> : "Not given"}
-                  </div>
+      <div className="space-y-4">
+        {rows.length === 0 && !isLoading && <p className="py-10 text-center text-neutral-500">Nothing here.</p>}
+        {rows.map((r: PrayerAdminRow) => (
+          <Card key={r.id} className="space-y-4 p-5">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold">{r.name}</span>
+                  <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${STATUS_STYLE[r.status]}`}>{STATUS_LABEL[r.status]}</span>
+                  <span className="text-xs text-neutral-500">{r.is_praise ? "Praise report" : "Prayer request"}</span>
                 </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="prayer-status">Status</Label>
-                  <select id="prayer-status" className={`${selectClass} w-full`} value={status} onChange={(e) => setStatus(e.target.value as PrayerStatus)}>
-                    <option value="new">New</option>
-                    <option value="prayed">Prayed for</option>
-                  </select>
+                <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-neutral-500">
+                  <span>{new Date(r.created_at).toLocaleDateString("en-KE", { day: "2-digit", month: "short", year: "numeric" })}</span>
+                  {r.phone && (
+                    <a href={`tel:${r.phone}`} className="inline-flex items-center gap-1 text-orange-600 hover:underline">
+                      <Phone className="h-3 w-3" /> {r.phone}
+                    </a>
+                  )}
+                  {r.email && <span>{r.email}</span>}
                 </div>
-                <label className="flex items-start gap-3">
-                  <input type="checkbox" className="mt-1" checked={approved} disabled={!selected.is_public} onChange={(e) => setApproved(e.target.checked)} />
-                  <span>
-                    Approved for the prayer wall
-                    <span className="block text-xs text-neutral-500">
-                      {selected.is_public
-                        ? "They asked for this to be shared anonymously. It only appears once you approve it."
-                        : "They asked to keep this private, so it cannot be shared."}
-                    </span>
-                  </span>
-                </label>
               </div>
-              <DialogFooter className="gap-2 sm:justify-between">
-                {confirmDelete ? (
-                  <Button type="button" variant="destructive" disabled={del.isPending} onClick={() => del.mutate()}>
-                    Yes, delete this request
-                  </Button>
-                ) : (
-                  <Button type="button" variant="ghost" className="text-red-600" onClick={() => setConfirmDelete(true)}>
-                    Delete
-                  </Button>
-                )}
-                <div className="flex gap-2">
-                  <Button type="button" variant="outline" onClick={() => setSelected(null)}>Cancel</Button>
-                  <Button type="button" className="bg-orange-500 text-black hover:bg-orange-600" disabled={save.isPending} onClick={() => save.mutate()}>
-                    {save.isPending ? "Saving..." : "Save"}
-                  </Button>
-                </div>
-              </DialogFooter>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+              <Button size="sm" variant="ghost" onClick={() => confirm("Delete this request for good?") && remove.mutate(r.id)}>
+                <Trash2 className="h-4 w-4 text-red-500" />
+              </Button>
+            </div>
+
+            <p className="whitespace-pre-wrap text-sm text-neutral-700">{r.request}</p>
+
+            <div className="flex flex-wrap items-center gap-3 border-t border-neutral-100 pt-4">
+              <label className="text-sm font-medium">Assigned to</label>
+              <select
+                value={r.assigned_to ?? ""}
+                disabled={assignMut.isPending}
+                onChange={(e) => assignMut.mutate({ id: r.id, leader_id: e.target.value || null })}
+                className="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm"
+              >
+                <option value="">Not assigned</option>
+                {leaders.map((l: AssignableLeader) => (
+                  <option key={l.user_id} value={l.user_id}>{leaderLabel(l)}</option>
+                ))}
+              </select>
+              {r.assigned_to && r.assigned_at && (
+                <span className="text-xs text-neutral-500">
+                  {leaderName(r.assigned_to) ?? "Leader"} since {new Date(r.assigned_at).toLocaleDateString("en-KE", { day: "2-digit", month: "short" })}
+                </span>
+              )}
+            </div>
+
+            {r.leader_notes && (
+              <div className="rounded-md bg-neutral-50 p-3 text-sm">
+                <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-neutral-500">Leader notes</div>
+                <p className="whitespace-pre-wrap text-neutral-700">{r.leader_notes}</p>
+              </div>
+            )}
+          </Card>
+        ))}
+      </div>
+
+      {leaders.length === 0 && !isLoading && (
+        <p className="text-sm text-neutral-500">No leaders to assign to yet. Add users with the leader role under Users.</p>
+      )}
     </div>
   );
 }

@@ -30,11 +30,12 @@ export const Route = createFileRoute("/ministries/myf")({
         "Leadership development track",
         "Outreach & mission weeks",
       ]}
+      slug="myf"
       leaders={[
         { name: "Pastor Patricia", role: "MYF Pastor" },
         { name: "Kevin ", role: "Discipleship Lead" },
         { name: "David Otieno", role: "Worship Lead" },
-        { name: "Faith Wambui", role: "Small Groups" },
+        // { name: "Faith Wambui", role: "Small Groups" },
       ]}
       meetTime="Sundays · 9:30 AM & 11:30 AM"
       meetLocation="MYF Zone · Bellevue Campus, Nairobi"

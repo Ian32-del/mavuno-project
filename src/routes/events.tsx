@@ -25,7 +25,27 @@ type EventRow = {
   location: string | null;
   ministry_slug: string | null;
   registration_url: string | null;
+  image_url: string | null;
+  description: string | null;
 };
+
+/* Long descriptions are cut short, with a Read more button to open the rest */
+function EventDescription({ text }: { text: string }) {
+  const [open, setOpen] = useState(false);
+  const long = text.length > 260;
+  return (
+    <div className="mt-4">
+      <p className={`whitespace-pre-line text-sm leading-relaxed text-muted-foreground ${long && !open ? "line-clamp-5" : ""}`}>
+        {text}
+      </p>
+      {long && (
+        <button type="button" onClick={() => setOpen(!open)} className="mt-1 text-sm font-semibold text-brand hover:underline">
+          {open ? "Show less" : "Read more"}
+        </button>
+      )}
+    </div>
+  );
+}
 
 function EventsPage() {
   const [events, setEvents] = useState<EventRow[]>([]);
@@ -75,37 +95,49 @@ function EventsPage() {
                 const time = date.toLocaleTimeString("en-KE", { hour: "2-digit", minute: "2-digit" });
 
                 return (
-                  <div key={e.id} className="flex flex-col justify-between gap-4 p-6 sm:flex-row sm:items-center">
-                    <div className="flex items-start gap-6">
-                      <div className="w-24 shrink-0 rounded-md bg-ink px-3 py-3 text-center text-white">
+                  <div key={e.id} className="flex flex-col gap-6 p-6 sm:flex-row">
+                    {/* Left: date, with the poster just below it */}
+                    <div className="w-full shrink-0 sm:w-52">
+                      <div className="rounded-md bg-ink px-3 py-3 text-center text-white">
                         <div className="text-[10px] font-semibold uppercase tracking-widest text-brand">{day}</div>
                         <div className="text-display text-2xl leading-tight text-white">{dayNum}</div>
                       </div>
-                      <div>
-                        {e.ministry_slug && (
-                          <span className="inline-block rounded-full bg-brand/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-brand">
-                            {e.ministry_slug}
-                          </span>
-                        )}
-                        <h3 className="text-display mt-2 text-2xl">{e.title}</h3>
-                        <div className="mt-2 flex flex-wrap gap-4 text-sm text-muted-foreground">
-                          <span className="inline-flex items-center gap-1.5"><Clock className="h-4 w-4" /> {time}</span>
-                          {e.location && (
-                            <span className="inline-flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {e.location}</span>
-                          )}
-                        </div>
-                      </div>
+                      {e.image_url && (
+                        <img
+                          src={e.image_url}
+                          alt={e.title}
+                          loading="lazy"
+                          className="mt-3 max-h-80 w-full rounded-md object-cover"
+                        />
+                      )}
                     </div>
-                    {e.registration_url && (
-                      <a
-                        href={e.registration_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="rounded-md border border-input bg-background px-4 py-2 text-sm font-semibold hover:border-brand hover:text-brand"
-                      >
-                        RSVP
-                      </a>
-                    )}
+
+                    {/* Right: details, description and RSVP */}
+                    <div className="min-w-0 flex-1">
+                      {e.ministry_slug && (
+                        <span className="inline-block rounded-full bg-brand/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-brand">
+                          {e.ministry_slug}
+                        </span>
+                      )}
+                      <h3 className="text-display mt-2 text-2xl">{e.title}</h3>
+                      <div className="mt-2 flex flex-wrap gap-4 text-sm text-muted-foreground">
+                        <span className="inline-flex items-center gap-1.5"><Clock className="h-4 w-4" /> {time}</span>
+                        {e.location && (
+                          <span className="inline-flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {e.location}</span>
+                        )}
+                      </div>
+                      {e.description && <EventDescription text={e.description} />}
+                      {e.registration_url && (
+                        <a
+                          href={e.registration_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-5 inline-block rounded-md border border-input bg-background px-4 py-2 text-sm font-semibold hover:border-brand hover:text-brand"
+                        >
+                          RSVP
+                        </a>
+                      )}
+                    </div>
                   </div>
                 );
               })}

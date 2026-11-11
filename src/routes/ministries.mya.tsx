@@ -30,6 +30,7 @@ export const Route = createFileRoute("/ministries/mya")({
         "Financial stewardship school",
         "Annual MYA retreat",
       ]}
+      slug="mya"
       leaders={[
         { name: "Pastor Patricia", role: "MYA Pastor" },
         { name: "Henry", role: "Discipleship" },

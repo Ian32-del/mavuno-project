@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Calendar, Play, Flame, Heart, Users, Sparkles, Quote } from "lucide-react";
+import { ArrowRight, Calendar, Play, Heart, Users, Sparkles, Quote } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import heroImg from "@/assets/hero-worship.jpeg";
 import myfImg from "@/assets/ministry-myf.jpeg";
@@ -9,6 +9,7 @@ import campusImg from "@/assets/ministry-campus.jpeg";
 import bonfireImg from "@/assets/camp-bonfire.jpeg";
 import { UpcomingEvents } from "@/components/upcoming-events";
 import { useSiteImage } from "@/lib/site-images";
+import { HomeStories } from "@/components/home-stories";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -146,8 +147,8 @@ function Index() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-ink/60 via-ink/40 to-ink" />
         <div className="relative mx-auto flex min-h-[92vh] max-w-7xl flex-col justify-end px-4 pb-16 pt-32 sm:px-6 lg:px-8">
-          <span className="inline-flex w-fit items-center gap-2 rounded-full border border-brand/50 bg-brand/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-brand">
-            <Flame className="h-3.5 w-3.5" /> Mavuno Youth Ministries
+          <span className="inline-flex w-fit items-center rounded-full border border-brand/50 bg-brand/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-brand">
+            Mavuno Youth Ministries
           </span>
           <h1 className="text-display mt-6 max-w-5xl text-5xl leading-[0.95] text-white sm:text-7xl lg:text-[8rem]">
             Raising Christ-<span className="text-brand">Centered</span> Leaders for This Generation
@@ -281,27 +282,7 @@ function Index() {
       </section>
 
       {/* TESTIMONIALS */}
-      <section className="bg-background py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="text-sm font-semibold uppercase tracking-widest text-brand">Stories</p>
-          <h2 className="text-display mt-3 text-4xl sm:text-5xl lg:text-6xl">Lives being rewritten.</h2>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {testimonials.map((t) => (
-              <figure key={t.name} className="relative rounded-2xl border border-border bg-card p-8">
-                <Quote className="h-8 w-8 text-brand" />
-                <blockquote className="mt-4 text-lg leading-snug">{t.quote}</blockquote>
-                <figcaption className="mt-6 text-sm">
-                  <div className="font-semibold">{t.name}</div>
-                  <div className="text-muted-foreground">{t.role}</div>
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-          <div className="mt-10">
-            <Link to="/stories" className="inline-flex items-center gap-2 font-semibold text-brand">Read more salvation stories <ArrowRight className="h-4 w-4" /></Link>
-          </div>
-        </div>
-      </section>
+      <HomeStories fallback={testimonials} />
 
       {/* PRAYER + SALVATION CTA */}
       <section className="bg-ember text-brand-foreground">

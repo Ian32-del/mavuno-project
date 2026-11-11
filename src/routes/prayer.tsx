@@ -33,12 +33,12 @@ function PrayerPage() {
     try {
       await submit({
         data: {
-          name: String(fd.get("name") || ""),
-          email: String(fd.get("email") || ""),
-          phone: String(fd.get("phone") || ""),
+          name: `${String(fd.get("first_name") || "").trim()} ${String(fd.get("surname") || "").trim()}`,
+          email: String(fd.get("email") || "").trim(),
+          phone: String(fd.get("phone") || "").trim(),
           request: String(fd.get("request") || ""),
           is_praise: isPraise,
-          is_public: fd.get("is_public") === "on",
+          is_public: false,
         },
       });
       setDone(true);
@@ -63,7 +63,7 @@ function PrayerPage() {
             <div className="rounded-2xl border border-brand bg-card p-10 text-center">
               <HeartHandshake className="mx-auto h-10 w-10 text-brand" />
               <h2 className="text-display mt-4 text-3xl">Prayer received.</h2>
-              <p className="mt-2 text-muted-foreground">Our team stands with you. God hears you.</p>
+              <p className="mt-2 text-muted-foreground">Our team stands with you. A leader may reach out to you by phone.</p>
             </div>
           ) : (
             <form onSubmit={onSubmit} className="space-y-5">
@@ -72,12 +72,14 @@ function PrayerPage() {
                 <button type="button" onClick={() => setIsPraise(true)} className={`rounded px-4 py-2 text-sm font-semibold ${isPraise ? "bg-brand text-brand-foreground" : "text-foreground"}`}>Praise report</button>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
-                <div><label className="text-sm font-medium">Name *</label><input required name="name" className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-brand focus:outline-none" /></div>
-                <div><label className="text-sm font-medium">Email</label><input type="email" name="email" className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-brand focus:outline-none" /></div>
+                <div><label className="text-sm font-medium">First name *</label><input required name="first_name" autoComplete="given-name" className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-brand focus:outline-none" /></div>
+                <div><label className="text-sm font-medium">Surname *</label><input required name="surname" autoComplete="family-name" className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-brand focus:outline-none" /></div>
               </div>
-              <div><label className="text-sm font-medium">Phone</label><input name="phone" className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-brand focus:outline-none" /></div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div><label className="text-sm font-medium">Phone number *</label><input required type="tel" name="phone" autoComplete="tel" placeholder="e.g. 0712 345 678" className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-brand focus:outline-none" /></div>
+                <div><label className="text-sm font-medium">Email</label><input type="email" name="email" autoComplete="email" className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-brand focus:outline-none" /></div>
+              </div>
               <div><label className="text-sm font-medium">{isPraise ? "What is God doing?" : "How can we pray with you?"} *</label><textarea required name="request" rows={6} className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-brand focus:outline-none" /></div>
-              <label className="flex items-start gap-3 text-sm"><input type="checkbox" name="is_public" className="mt-1" /> <span>Share (anonymously) on our prayer wall to encourage others.</span></label>
               <button disabled={loading} className="w-full rounded-md bg-ink px-6 py-3.5 font-semibold text-ink-foreground disabled:opacity-60 sm:w-auto">
                 {loading ? "Sending…" : "Send prayer request"}
               </button>
