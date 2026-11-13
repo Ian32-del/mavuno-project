@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VisitRouteImport } from './routes/visit'
+import { Route as TriviaRouteImport } from './routes/trivia'
 import { Route as StoriesRouteImport } from './routes/stories'
 import { Route as ShareStoryRouteImport } from './routes/share-story'
 import { Route as SermonsRouteImport } from './routes/sermons'
@@ -29,6 +30,7 @@ import { Route as MinistriesMyfRouteImport } from './routes/ministries.myf'
 import { Route as MinistriesMyaRouteImport } from './routes/ministries.mya'
 import { Route as MinistriesCampusRouteImport } from './routes/ministries.campus'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminTriviaRouteImport } from './routes/admin.trivia'
 import { Route as AdminStoriesRouteImport } from './routes/admin.stories'
 import { Route as AdminSalvationRouteImport } from './routes/admin.salvation'
 import { Route as AdminResourcesRouteImport } from './routes/admin.resources'
@@ -38,11 +40,17 @@ import { Route as AdminMinistriesRouteImport } from './routes/admin.ministries'
 import { Route as AdminMessagesRouteImport } from './routes/admin.messages'
 import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminEventsRouteImport } from './routes/admin.events'
+import { Route as AdminDailyVerseRouteImport } from './routes/admin.daily-verse'
 import { Route as SitemapRouteImport } from './routes/sitemap.'
 
 const VisitRoute = VisitRouteImport.update({
   id: '/visit',
   path: '/visit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TriviaRoute = TriviaRouteImport.update({
+  id: '/trivia',
+  path: '/trivia',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StoriesRoute = StoriesRouteImport.update({
@@ -140,6 +148,11 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminTriviaRoute = AdminTriviaRouteImport.update({
+  id: '/trivia',
+  path: '/trivia',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminStoriesRoute = AdminStoriesRouteImport.update({
   id: '/stories',
   path: '/stories',
@@ -185,6 +198,11 @@ const AdminEventsRoute = AdminEventsRouteImport.update({
   path: '/events',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminDailyVerseRoute = AdminDailyVerseRouteImport.update({
+  id: '/daily-verse',
+  path: '/daily-verse',
+  getParentRoute: () => AdminRoute,
+} as any)
 const SitemapRoute = SitemapRouteImport.update({
   id: '/sitemap/',
   path: '/sitemap/',
@@ -206,8 +224,10 @@ export interface FileRoutesByFullPath {
   '/sermons': typeof SermonsRoute
   '/share-story': typeof ShareStoryRoute
   '/stories': typeof StoriesRoute
+  '/trivia': typeof TriviaRoute
   '/visit': typeof VisitRoute
   '/sitemap/': typeof SitemapRoute
+  '/admin/daily-verse': typeof AdminDailyVerseRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/messages': typeof AdminMessagesRoute
@@ -217,6 +237,7 @@ export interface FileRoutesByFullPath {
   '/admin/resources': typeof AdminResourcesRoute
   '/admin/salvation': typeof AdminSalvationRoute
   '/admin/stories': typeof AdminStoriesRoute
+  '/admin/trivia': typeof AdminTriviaRoute
   '/admin/users': typeof AdminUsersRoute
   '/ministries/campus': typeof MinistriesCampusRoute
   '/ministries/mya': typeof MinistriesMyaRoute
@@ -237,8 +258,10 @@ export interface FileRoutesByTo {
   '/sermons': typeof SermonsRoute
   '/share-story': typeof ShareStoryRoute
   '/stories': typeof StoriesRoute
+  '/trivia': typeof TriviaRoute
   '/visit': typeof VisitRoute
   '/sitemap': typeof SitemapRoute
+  '/admin/daily-verse': typeof AdminDailyVerseRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/messages': typeof AdminMessagesRoute
@@ -248,6 +271,7 @@ export interface FileRoutesByTo {
   '/admin/resources': typeof AdminResourcesRoute
   '/admin/salvation': typeof AdminSalvationRoute
   '/admin/stories': typeof AdminStoriesRoute
+  '/admin/trivia': typeof AdminTriviaRoute
   '/admin/users': typeof AdminUsersRoute
   '/ministries/campus': typeof MinistriesCampusRoute
   '/ministries/mya': typeof MinistriesMyaRoute
@@ -270,8 +294,10 @@ export interface FileRoutesById {
   '/sermons': typeof SermonsRoute
   '/share-story': typeof ShareStoryRoute
   '/stories': typeof StoriesRoute
+  '/trivia': typeof TriviaRoute
   '/visit': typeof VisitRoute
   '/sitemap/': typeof SitemapRoute
+  '/admin/daily-verse': typeof AdminDailyVerseRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/messages': typeof AdminMessagesRoute
@@ -281,6 +307,7 @@ export interface FileRoutesById {
   '/admin/resources': typeof AdminResourcesRoute
   '/admin/salvation': typeof AdminSalvationRoute
   '/admin/stories': typeof AdminStoriesRoute
+  '/admin/trivia': typeof AdminTriviaRoute
   '/admin/users': typeof AdminUsersRoute
   '/ministries/campus': typeof MinistriesCampusRoute
   '/ministries/mya': typeof MinistriesMyaRoute
@@ -304,8 +331,10 @@ export interface FileRouteTypes {
     | '/sermons'
     | '/share-story'
     | '/stories'
+    | '/trivia'
     | '/visit'
     | '/sitemap/'
+    | '/admin/daily-verse'
     | '/admin/events'
     | '/admin/media'
     | '/admin/messages'
@@ -315,6 +344,7 @@ export interface FileRouteTypes {
     | '/admin/resources'
     | '/admin/salvation'
     | '/admin/stories'
+    | '/admin/trivia'
     | '/admin/users'
     | '/ministries/campus'
     | '/ministries/mya'
@@ -335,8 +365,10 @@ export interface FileRouteTypes {
     | '/sermons'
     | '/share-story'
     | '/stories'
+    | '/trivia'
     | '/visit'
     | '/sitemap'
+    | '/admin/daily-verse'
     | '/admin/events'
     | '/admin/media'
     | '/admin/messages'
@@ -346,6 +378,7 @@ export interface FileRouteTypes {
     | '/admin/resources'
     | '/admin/salvation'
     | '/admin/stories'
+    | '/admin/trivia'
     | '/admin/users'
     | '/ministries/campus'
     | '/ministries/mya'
@@ -367,8 +400,10 @@ export interface FileRouteTypes {
     | '/sermons'
     | '/share-story'
     | '/stories'
+    | '/trivia'
     | '/visit'
     | '/sitemap/'
+    | '/admin/daily-verse'
     | '/admin/events'
     | '/admin/media'
     | '/admin/messages'
@@ -378,6 +413,7 @@ export interface FileRouteTypes {
     | '/admin/resources'
     | '/admin/salvation'
     | '/admin/stories'
+    | '/admin/trivia'
     | '/admin/users'
     | '/ministries/campus'
     | '/ministries/mya'
@@ -400,6 +436,7 @@ export interface RootRouteChildren {
   SermonsRoute: typeof SermonsRoute
   ShareStoryRoute: typeof ShareStoryRoute
   StoriesRoute: typeof StoriesRoute
+  TriviaRoute: typeof TriviaRoute
   VisitRoute: typeof VisitRoute
   SitemapRoute: typeof SitemapRoute
 }
@@ -411,6 +448,13 @@ declare module '@tanstack/react-router' {
       path: '/visit'
       fullPath: '/visit'
       preLoaderRoute: typeof VisitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trivia': {
+      id: '/trivia'
+      path: '/trivia'
+      fullPath: '/trivia'
+      preLoaderRoute: typeof TriviaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/stories': {
@@ -546,6 +590,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/trivia': {
+      id: '/admin/trivia'
+      path: '/trivia'
+      fullPath: '/admin/trivia'
+      preLoaderRoute: typeof AdminTriviaRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/stories': {
       id: '/admin/stories'
       path: '/stories'
@@ -609,6 +660,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEventsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/daily-verse': {
+      id: '/admin/daily-verse'
+      path: '/daily-verse'
+      fullPath: '/admin/daily-verse'
+      preLoaderRoute: typeof AdminDailyVerseRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/sitemap/': {
       id: '/sitemap/'
       path: '/sitemap'
@@ -620,6 +678,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminDailyVerseRoute: typeof AdminDailyVerseRoute
   AdminEventsRoute: typeof AdminEventsRoute
   AdminMediaRoute: typeof AdminMediaRoute
   AdminMessagesRoute: typeof AdminMessagesRoute
@@ -629,11 +688,13 @@ interface AdminRouteChildren {
   AdminResourcesRoute: typeof AdminResourcesRoute
   AdminSalvationRoute: typeof AdminSalvationRoute
   AdminStoriesRoute: typeof AdminStoriesRoute
+  AdminTriviaRoute: typeof AdminTriviaRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminDailyVerseRoute: AdminDailyVerseRoute,
   AdminEventsRoute: AdminEventsRoute,
   AdminMediaRoute: AdminMediaRoute,
   AdminMessagesRoute: AdminMessagesRoute,
@@ -643,6 +704,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminResourcesRoute: AdminResourcesRoute,
   AdminSalvationRoute: AdminSalvationRoute,
   AdminStoriesRoute: AdminStoriesRoute,
+  AdminTriviaRoute: AdminTriviaRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
@@ -680,6 +742,7 @@ const rootRouteChildren: RootRouteChildren = {
   SermonsRoute: SermonsRoute,
   ShareStoryRoute: ShareStoryRoute,
   StoriesRoute: StoriesRoute,
+  TriviaRoute: TriviaRoute,
   VisitRoute: VisitRoute,
   SitemapRoute: SitemapRoute,
 }

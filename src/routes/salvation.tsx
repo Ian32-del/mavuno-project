@@ -31,7 +31,8 @@ function SalvationPage() {
     try {
       await submit({
         data: {
-          name: String(fd.get("name") || ""),
+          first_name: String(fd.get("first_name") || "").trim(),
+          surname: String(fd.get("surname") || "").trim(),
           email: String(fd.get("email") || ""),
           phone: String(fd.get("phone") || ""),
           ministry_interest: String(fd.get("ministry_interest") || ""),
@@ -71,9 +72,10 @@ function SalvationPage() {
             <form onSubmit={onSubmit} className="space-y-5">
               <h2 className="text-display text-3xl">Tell us who you are</h2>
               <div className="grid gap-4 sm:grid-cols-2">
-                <div><label className="text-sm font-medium">Name *</label><input required name="name" className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-brand focus:outline-none" /></div>
-                <div><label className="text-sm font-medium">Email *</label><input required type="email" name="email" className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-brand focus:outline-none" /></div>
-                <div><label className="text-sm font-medium">Phone</label><input name="phone" className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-brand focus:outline-none" /></div>
+                <div><label className="text-sm font-medium">First name *</label><input required name="first_name" autoComplete="given-name" className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-brand focus:outline-none" /></div>
+                <div><label className="text-sm font-medium">Surname *</label><input required name="surname" autoComplete="family-name" className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-brand focus:outline-none" /></div>
+                <div><label className="text-sm font-medium">Phone *</label><input required type="tel" name="phone" autoComplete="tel" placeholder="0712 345 678" className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-brand focus:outline-none" /></div>
+                <div><label className="text-sm font-medium">Email *</label><input required type="email" name="email" autoComplete="email" className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-brand focus:outline-none" /></div>
                 <div>
                   <label className="text-sm font-medium">Ministry you'd fit best</label>
                   <select name="ministry_interest" className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-brand focus:outline-none">

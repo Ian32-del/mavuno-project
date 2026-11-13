@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Flame, Search } from "lucide-react";
+import { Flame, MessageCircle, Phone, Search } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,6 +34,13 @@ const STATUS_STYLE: Record<SalvationStatus, string> = {
 };
 
 const selectClass = "h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500";
+
+/* 0712 345 678 or +254712345678 becomes 254712345678 for a WhatsApp link */
+function whatsappNumber(phone: string) {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.startsWith("0")) return `254${digits.slice(1)}`;
+  return digits;
+}
 
 const formatDate = (value: string) => new Date(value).toLocaleDateString("en-KE", { day: "2-digit", month: "short", year: "numeric" });
 
@@ -129,7 +136,8 @@ function SalvationAdmin() {
             <tr>
               <th className="px-4 py-3">Date</th>
               <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Contact</th>
+              <th className="px-4 py-3">Phone</th>
+              <th className="px-4 py-3">Email</th>
               <th className="px-4 py-3">Ministry</th>
               <th className="px-4 py-3">Status</th>
             </tr>
@@ -137,17 +145,17 @@ function SalvationAdmin() {
           <tbody>
             {isLoading && (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-neutral-500">Loading...</td>
+                <td colSpan={6} className="px-4 py-8 text-center text-neutral-500">Loading...</td>
               </tr>
             )}
             {error && (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-red-600">{(error as Error).message}</td>
+                <td colSpan={6} className="px-4 py-8 text-center text-red-600">{(error as Error).message}</td>
               </tr>
             )}
             {!isLoading && !error && shown.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-neutral-500">
+                <td colSpan={6} className="px-4 py-8 text-center text-neutral-500">
                   {rows.length === 0 ? "No decisions yet." : "Nothing matches your search."}
                 </td>
               </tr>
@@ -156,10 +164,8 @@ function SalvationAdmin() {
               <tr key={r.id} onClick={() => open(r)} className="cursor-pointer border-t border-neutral-100 hover:bg-neutral-50">
                 <td className="whitespace-nowrap px-4 py-3 text-neutral-500">{formatDate(r.created_at)}</td>
                 <td className="px-4 py-3 font-medium">{r.name}</td>
-                <td className="px-4 py-3">
-                  <div>{r.email}</div>
-                  {r.phone && <div className="text-xs text-neutral-500">{r.phone}</div>}
-                </td>
+                <td className="whitespace-nowrap px-4 py-3">{r.phone || <span className="text-neutral-400">Not given</span>}</td>
+                <td className="px-4 py-3">{r.email}</td>
                 <td className="px-4 py-3">{r.ministry_interest || "Not sure"}</td>
                 <td className="px-4 py-3">
                   <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${STATUS_STYLE[r.status]}`}>{STATUS_LABEL[r.status]}</span>
@@ -188,6 +194,16 @@ function SalvationAdmin() {
                     <div className="text-xs text-neutral-500">Phone</div>
                     {selected.phone ? <a className="text-orange-600 hover:underline" href={`tel:${selected.phone}`}>{selected.phone}</a> : "Not given"}
                   </div>
+                  {selected.phone && (
+                    <div className="col-span-2 flex flex-wrap gap-2">
+                      <a href={`tel:${selected.phone}`} className="inline-flex items-center gap-1.5 rounded-md bg-orange-500 px-3 py-1.5 text-sm font-medium text-black hover:bg-orange-600">
+                        <Phone className="h-4 w-4" /> Call
+                      </a>
+                      <a href={`https://wa.me/${whatsappNumber(selected.phone)}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-md border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-50">
+                        <MessageCircle className="h-4 w-4" /> WhatsApp
+                      </a>
+                    </div>
+                  )}
                   <div className="col-span-2">
                     <div className="text-xs text-neutral-500">Ministry they would fit best</div>
                     {selected.ministry_interest || "Not sure"}

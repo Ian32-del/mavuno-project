@@ -10,6 +10,7 @@ import bonfireImg from "@/assets/camp-bonfire.jpeg";
 import { UpcomingEvents } from "@/components/upcoming-events";
 import { useSiteImage } from "@/lib/site-images";
 import { HomeStories } from "@/components/home-stories";
+import { DailyVerse } from "@/components/daily-verse";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -214,6 +215,8 @@ function Index() {
           ))}
         </div>
       </section>
+
+      <DailyVerse />
 
       {/* MINISTRIES */}
       <section className="bg-background py-24">

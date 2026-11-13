@@ -1,6 +1,6 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { LayoutDashboard, CalendarDays, ImageIcon, Users, Church, LogOut, Flame, HeartHandshake, Mail, BookOpen, HandHeart } from "lucide-react";
+import { LayoutDashboard, CalendarDays, ImageIcon, Users, Church, LogOut, Flame, HeartHandshake, Mail, BookOpen, HandHeart, BookMarked, Gamepad2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -22,6 +22,8 @@ const NAV: { to: string; label: string; icon: typeof LayoutDashboard; roles?: Ro
   { to: "/admin/salvation", label: "Salvation", icon: Flame },
   { to: "/admin/stories", label: "Stories", icon: BookOpen },
   { to: "/admin/prayer", label: "Prayer requests", icon: HeartHandshake },
+  { to: "/admin/daily-verse", label: "Daily verse", icon: BookMarked },
+  { to: "/admin/trivia", label: "Bible trivia", icon: Gamepad2 },
   { to: "/admin/users", label: "Users", icon: Users, roles: ["super_admin"] },
 ];
 

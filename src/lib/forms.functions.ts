@@ -37,9 +37,10 @@ export const submitPrayerRequest = createServerFn({ method: "POST" })
   });
 
 const salvationSchema = z.object({
-  name: z.string().trim().min(1).max(100),
+  first_name: z.string().trim().min(1).max(60),
+  surname: z.string().trim().min(1).max(60),
   email: z.string().trim().email().max(255),
-  phone: z.string().trim().max(30).optional().or(z.literal("")),
+  phone: z.string().trim().min(6).max(30),
   ministry_interest: z.string().max(100).optional().or(z.literal("")),
   notes: z.string().max(2000).optional().or(z.literal("")),
 });
@@ -49,9 +50,9 @@ export const submitSalvationDecision = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const supabase = getServerClient();
     const { error } = await supabase.from("salvation_decisions").insert({
-      name: data.name,
+      name: `${data.first_name} ${data.surname}`,
       email: data.email,
-      phone: data.phone || null,
+      phone: data.phone,
       ministry_interest: data.ministry_interest || null,
       notes: data.notes || null,
     });
